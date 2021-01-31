@@ -1,5 +1,6 @@
 package View;
 
+import java.awt.Color;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -33,9 +34,10 @@ public class LoginFrame extends JFrame {
 	}
 
 	private void adjust() {
-		setSize(400, 200);
+		setSize(450, 220);
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		setLocationRelativeTo(null);
+		setResizable(false);
 		// Set layout.
 		loginPanel.setLayout(new GridBagLayout());
 		loginPanel.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createTitledBorder("Prijavi se "),
@@ -44,10 +46,11 @@ public class LoginFrame extends JFrame {
 		// Create components.
 		korisnickoImeLabel = new JLabel("Korisnicko ime: ");
 		lozinkaLabel = new JLabel("Lozinka: ");
+		errorLabel = new JLabel();
 		korisnickoImeTxt = new JTextField(20);
 		lozinkaTxt = new JPasswordField(20);
 		loginBtn = new JButton("Prijava");
-		//this.loginBtn.setEnabled(false);
+		this.loginBtn.setEnabled(false);
 
 		// Add components.
 		setGridBag(loginPanel);
@@ -99,7 +102,7 @@ public class LoginFrame extends JFrame {
 	}
 
 	// Refresh form.
-	private void refresh() {
+	public void refresh() {
 		this.korisnickoImeTxt.setText("");
 		this.lozinkaTxt.setText("");
 	}
@@ -113,6 +116,7 @@ public class LoginFrame extends JFrame {
 		gbc.insets = new Insets(5, 5, 5, 5);
 		gbc.gridx = 1;
 		gbc.gridy = 1;
+		
 		loginPanel.add(korisnickoImeLabel, gbc);
 
 		gbc.gridx = 2;
@@ -131,6 +135,12 @@ public class LoginFrame extends JFrame {
 		gbc.gridy = 3;
 		gbc.anchor = GridBagConstraints.CENTER;
 		loginPanel.add(loginBtn, gbc);
+		
+		gbc.gridx = 1;
+		gbc.gridy = 4;
+		gbc.anchor = GridBagConstraints.LAST_LINE_START;
+		gbc.weightx = 2;
+		loginPanel.add(errorLabel, gbc);
 	}
 	
 	private void setToolbarIcon() {
@@ -150,7 +160,13 @@ public class LoginFrame extends JFrame {
 		return this.lozinkaTxt.getPassword();
 	}
 
-	private JLabel korisnickoImeLabel, lozinkaLabel;
+	public void setErrorMessage(String message) {
+		this.errorLabel.setForeground(Color.RED);
+		this.errorLabel.setText(message);
+		this.errorLabel.setOpaque(true);
+	}
+	
+	private JLabel korisnickoImeLabel, lozinkaLabel, errorLabel;
 	private JTextField korisnickoImeTxt;
 	private JPasswordField lozinkaTxt;
 	private JButton loginBtn;

@@ -70,6 +70,10 @@ public class LoginController extends BaseController {
 			try {
 				if (kupacService.kupacExists(this.loginFrame.getKorisnickoIme(), this.loginFrame.getLozinka())) {
 					new KupacFrame("Profile").setVisible(true);
+					this.loginFrame.refresh();
+				} else {
+					this.loginFrame.setErrorMessage("Kupac nije pronadjen");
+					return;
 				}
 			} catch (SQLException e1) {
 				// TODO Auto-generated catch block
