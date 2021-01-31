@@ -21,23 +21,17 @@ public class KupacFrame extends JFrame {
 	
 	private KupacController kupacController;
 	
-	public KupacFrame(String title, String username, KupacController controller) {
+	public KupacFrame(String title) {
 		super();
 		
 		setToolbarIcon(); 
 		
-		
 		kupacPanel = new JPanel();
 		// Set controller.
-		setKupacController(controller);
 		// Add login panel to the main frame.
 		this.getContentPane().add(BorderLayout.LINE_START, kupacPanel);
 		// Adjust the layout.
 		adjust();
-		
-		// Populate fields.
-		Kupac kupac = getKupacController().getByUsername(username);
-
 	}
 	
 	private void adjust() {
