@@ -3,7 +3,6 @@ package View;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
-import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
@@ -18,26 +17,19 @@ import javax.swing.JTextField;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
-import Controller.KupacController;
-
 @SuppressWarnings("serial")
 public class LoginFrame extends JFrame {
 
-	private KupacController loginController;
-
-	public LoginFrame(String title, KupacController controller) {
+	public LoginFrame(String title) {
 		super();
 		
 		setToolbarIcon(); 
 		
 		loginPanel = new JPanel();
-		// Set controller.
-		setLoginControler(controller);
 		// Add login panel to the main frame.
 		this.getContentPane().add(loginPanel);
 		// Adjust the layout.
 		adjust();
-
 	}
 
 	private void adjust() {
@@ -55,34 +47,17 @@ public class LoginFrame extends JFrame {
 		korisnickoImeTxt = new JTextField(20);
 		lozinkaTxt = new JPasswordField(20);
 		loginBtn = new JButton("Prijava");
-		this.loginBtn.setEnabled(false);
+		//this.loginBtn.setEnabled(false);
 
 		// Add components.
 		setGridBag(loginPanel);
 
-		// Add event listeners.
-		loginBtn.addActionListener(new ActionListener() {
-
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				if (getLoginController().exists(korisnickoImeTxt.getText(), lozinkaTxt.getPassword())) {
-					new KupacFrame("Profil", korisnickoImeTxt.getText(), new KupacController(new KupacFrame())).setVisible(true);
-					refresh();
-				}
-			}
-
-		});
-
 		// Add document listeners.
 		addDocumentListeners();
 	}
-
-	public KupacController getLoginController() {
-		return this.loginController;
-	}
-
-	public void setLoginControler(KupacController loginController) {
-		this.loginController = loginController;
+	
+	public void addLoginBtnListener(ActionListener actionListener) {
+		this.loginBtn.addActionListener(actionListener);
 	}
 	
 	public String getUsername() {
@@ -93,6 +68,7 @@ public class LoginFrame extends JFrame {
 		return lozinkaTxt.getPassword();
 	}
 
+	// Client side validation.
 	private void addDocumentListeners() {
 		this.korisnickoImeTxt.getDocument().addDocumentListener(new DocumentListener() {
 
@@ -164,6 +140,14 @@ public class LoginFrame extends JFrame {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
+	}
+	
+	public String getKorisnickoIme() {
+		return this.korisnickoImeTxt.getText();
+	}
+	
+	public char[] getLozinka() {
+		return this.lozinkaTxt.getPassword();
 	}
 
 	private JLabel korisnickoImeLabel, lozinkaLabel;

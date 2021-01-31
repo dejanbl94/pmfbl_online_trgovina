@@ -3,20 +3,15 @@ package View;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
-import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
-
 import javax.imageio.ImageIO;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 
-import Controller.KupacController;
-
-
-public class InitialFrame extends JFrame implements ActionListener {
+public class InitialFrame extends JFrame {
 	private static final long serialVersionUID = 1L;
 	private JButton loginBtn;
 	private JButton registerBtn;
@@ -28,7 +23,7 @@ public class InitialFrame extends JFrame implements ActionListener {
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public InitialFrame(String title) {
 		super(title);
-		
+
 		setToolbarIcon();
 
 		// Set layout
@@ -39,20 +34,22 @@ public class InitialFrame extends JFrame implements ActionListener {
 		registerBtn = new JButton("Registracija");
 		combo = new JComboBox(comboItems);
 		combo.setSelectedIndex(0);
-		combo.addActionListener(this);
 
 		// Add components to the layout
 		setGridBag();
+	}
 
-		loginBtn.addActionListener(new ActionListener() {
+	// Register listeners, handling in the controller.
+	public void addNavigateToLoginListener(ActionListener actionListener) {
+		this.loginBtn.addActionListener(actionListener);
+	}
 
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				loginFrame = new LoginFrame("Login", new KupacController());
-				loginFrame.setVisible(true);
-			}
+	public void addComboListener(ActionListener actionListener) {
+		this.combo.addActionListener(actionListener);
+	}
 
-		});
+	public LoginFrame getLoginFrame() {
+		return this.loginFrame;
 	}
 
 	private void setGridBag() {
@@ -70,16 +67,7 @@ public class InitialFrame extends JFrame implements ActionListener {
 		gbc.gridy = 1;
 		add(registerBtn, gbc);
 	}
-	
-	public LoginFrame getLoginFrame() {
-		return this.loginFrame;
-	}
 
-	@Override
-	public void actionPerformed(ActionEvent e) {
-		// TODO Auto-generated method stub
-
-	}
 	private void setToolbarIcon() {
 		try {
 			setIconImage(ImageIO.read(new File("src/resources/laptop.png")));
