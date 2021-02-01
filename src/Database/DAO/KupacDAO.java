@@ -16,7 +16,7 @@ import QueryBuilder.QueryBuilder;
 
 public class KupacDAO implements iDAO<Kupac> {
 
-	private static final Logger LOGGER = Logger.getLogger( KupacController.class.getSimpleName());
+	private static final Logger LOGGER = Logger.getLogger(KupacController.class.getSimpleName());
 	static DbConnectionPool pool;
 
 	public KupacDAO() {
@@ -26,31 +26,31 @@ public class KupacDAO implements iDAO<Kupac> {
 	public boolean exists(String korisnickoIme, String password) throws SQLException {
 		PreparedStatement statement = null;
 		ResultSet resultSet = null;
+		// TODO zasto neradi sa try with resource
+		//Connection connection = DbConnectionPool.getConnection();
+			try (Connection connection = DbConnectionPool.getConnection()) {
+				statement = connection.prepareStatement(QueryBuilder.Kupac.GET);
 
-		try (Connection connection = DbConnectionPool.getConnection()) {
-			statement = connection.prepareStatement(QueryBuilder.Kupac.GET);
-			
-			statement.setString(1, korisnickoIme);
-			statement.setString(2, password);
-			
-			resultSet = statement.executeQuery();
-			if (!resultSet.next()) {
-				return false;
-			} else {
-				return true;
+				statement.setString(1, korisnickoIme);
+				statement.setString(2, password);
+
+				resultSet = statement.executeQuery();
+				if (!resultSet.next()) {
+					return false;
+				} else {
+					return true;
+				}
+			} catch (SQLException ex) {
+				LOGGER.log(Level.SEVERE, ex.getLocalizedMessage());
+			} finally {
+				if (statement != null) {
+					statement.close();
+				}
+				if (resultSet != null) {
+					resultSet.close();
+				}
 			}
-		} catch (SQLException ex) {
-			LOGGER.log(Level.SEVERE, ex.getLocalizedMessage());
-		}
-		finally {
-			if (statement != null) {
-				statement.close();
-			}
-			if (resultSet != null) {
-				resultSet.close();
-			}
-		}
-		return false;
+			return false;
 	}
 
 	@Override
@@ -62,9 +62,9 @@ public class KupacDAO implements iDAO<Kupac> {
 
 		try (Connection connection = DbConnectionPool.getConnection()) {
 			statement = connection.prepareStatement(QueryBuilder.Kupac.GET_BY_IME);
-			
+
 			statement.setString(1, korisnickoIme.toString());
-			
+
 			resultSet = statement.executeQuery();
 			if (resultSet.next()) {
 				kupac.setKorisnickoIme(resultSet.getString("korisnicko_ime"));
@@ -101,7 +101,7 @@ public class KupacDAO implements iDAO<Kupac> {
 		try (Connection connection = DbConnectionPool.getConnection()) {
 			if (!exists(kupac.getKorisnickoIme(), kupac.getLozinka())) {
 				statement = connection.prepareStatement(QueryBuilder.Kupac.INSERT);
-				
+
 				statement.setString(1, kupac.getKorisnickoIme());
 				statement.setString(2, kupac.getIme());
 				statement.setString(3, kupac.getPrezime());
@@ -113,7 +113,7 @@ public class KupacDAO implements iDAO<Kupac> {
 				statement.setString(9, kupac.getPostanskiBroj());
 				statement.setString(10, kupac.getPol());
 				statement.setString(11, kupac.getEmail());
-				
+
 				statement.executeUpdate();
 			} else {
 				return false;

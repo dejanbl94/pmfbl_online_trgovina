@@ -6,6 +6,7 @@ import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import CustomExceptions.BlankInputException;
 import Database.DAO.KupacDAO;
 import Service.KupacService;
 import View.InitialFrame;
@@ -27,15 +28,6 @@ public class LoginController extends BaseController {
 		getInitialFrame().addNavigateToLoginListener(new NavigateToLoginListener());
 		getInitialFrame().addComboListener(new NavigateToLoginListener());
 		this.kupacService = new KupacService(new KupacDAO());
-	}
-
-	public boolean exists(String username, char[] charedPassword) {
-		try {
-			return kupacService.kupacExists(username, charedPassword);
-		} catch (SQLException e) {
-			LOGGER.log(Level.SEVERE, e.getMessage());
-		}
-		return false;
 	}
 
 	public void setInitialFrame(InitialFrame frame) {
@@ -72,12 +64,15 @@ public class LoginController extends BaseController {
 					new KupacFrame("Profile").setVisible(true);
 					this.loginFrame.refresh();
 				} else {
-					this.loginFrame.setErrorMessage("Kupac nije pronadjen");
+					this.loginFrame.setErrorMessage("Kupac ne postoji");
+					LOGGER.log(Level.INFO, "Kupac ne postoji");
 					return;
 				}
 			} catch (SQLException e1) {
-				// TODO Auto-generated catch block
 				e1.printStackTrace();
+			} catch (BlankInputException e1) {
+				this.loginFrame.setErrorMessage(e1.getMessage());
+				return;
 			}
 		}
 	}

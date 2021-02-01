@@ -4,6 +4,7 @@ import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import CustomExceptions.BlankInputException;
 import Database.DAO.KupacDAO;
 import Entity.Kupac;
 import Service.KupacService;
@@ -28,6 +29,9 @@ public class KupacController extends BaseController {
 			return kupacService.kupacExists(username, charedPassword);
 		} catch (SQLException e) {
 			LOGGER.log(Level.SEVERE, e.getMessage());
+		} catch (BlankInputException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 		return false;
 	}

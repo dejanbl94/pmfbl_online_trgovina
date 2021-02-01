@@ -6,7 +6,7 @@ import java.sql.SQLException;
 
 public class DbConnectionPool {
 
-	private static final int MAX_CONNECTIONS = 10;
+	private static final int MAX_CONNECTIONS = 20;
 	private static final Object LOCK = new Object();
 
 	private static volatile DbConnectionPool instance = null;
@@ -52,7 +52,8 @@ public class DbConnectionPool {
 			counter = 0;
 
 		// Uzmi slobodnu konekciju iz pool-a.
-		return connections[counter % MAX_CONNECTIONS];
+		Connection con =  connections[counter % MAX_CONNECTIONS];
+		return con;
 	}
 	
 	private static final String host = "localhost";

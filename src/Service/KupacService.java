@@ -1,6 +1,8 @@
 package Service;
 
 import java.sql.SQLException;
+
+import CustomExceptions.BlankInputException;
 import Database.DAO.KupacDAO;
 import Entity.Kupac;
 
@@ -24,12 +26,11 @@ public class KupacService {
 		return kupacDAO.getBy(username);
 	}
 	
-	public boolean kupacExists(String username, char[] charedPassword) throws SQLException {
+	public boolean kupacExists(String username, char[] charedPassword) throws SQLException, BlankInputException {
 		String password = new String(charedPassword);
 		
 		if (username.isEmpty() || password.isEmpty()) {
-			System.err.println("Name or email can't be empty!");
-			return false;
+			throw new BlankInputException("Unesite sva polja.");
 		}
 		return kupacDAO.exists(username, password);
 	}
