@@ -17,18 +17,7 @@ public class DbConnectionPool {
 	}
 
 	// Singleton instanciranje connection pool-a.
-	public static DbConnectionPool getInstance() {
-		if (instance == null) {
-			synchronized (LOCK) {
-				if (instance == null) {
-					instance = new DbConnectionPool();
-					addConnections();
-					counter = 0;
-				}
-			}
-		}
-		return instance;
-	}
+	
 
 	private static void addConnections() {
 		try {
