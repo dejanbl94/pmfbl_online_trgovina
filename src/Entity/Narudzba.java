@@ -2,11 +2,12 @@ package Entity;
 
 public class Narudzba {
 	
-	private int kupacId, trgovacId;
+	private int id, kupacId, trgovacId;
 	private String datumNarudzbe, datumIsporuke, napomena;
 
-	public Narudzba(int kupacId, int trgovacId, String datumNarudzbe, String datumIsporuke, String napomena) {
+	public Narudzba(int id, int kupacId, int trgovacId, String datumNarudzbe, String datumIsporuke, String napomena) {
 		super();
+		this.id = id;
 		this.kupacId = kupacId;
 		this.trgovacId = trgovacId;
 		this.datumNarudzbe = datumNarudzbe;
@@ -16,6 +17,13 @@ public class Narudzba {
 	
 	public Narudzba() {}
 	
+	public int getId() {
+		return this.id;
+	}
+	
+	public void setId(int id) {
+		this.id = id;
+	}
 	public int getKupacId() {
 		return kupacId;
 	}
@@ -58,7 +66,7 @@ public class Narudzba {
 
 	@Override
 	public String toString() {
-		return "Narudzba [kupacId=" + kupacId + ", trgovacId=" + trgovacId + ", datumNarudzbe=" + datumNarudzbe
+		return "Narudzba [id =" + id + ", kupacId=" + kupacId + ", trgovacId=" + trgovacId + ", datumNarudzbe=" + datumNarudzbe
 				+ ", datumIsporuke=" + datumIsporuke + ", napomena=" + napomena + "]";
 	}
 }

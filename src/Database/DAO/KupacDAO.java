@@ -67,6 +67,7 @@ public class KupacDAO implements iDAO<Kupac> {
 			
 			resultSet = statement.executeQuery();
 			if (resultSet.next()) {
+				kupac.setId(resultSet.getInt("id"));
 				kupac.setKorisnickoIme(resultSet.getString("korisnicko_ime"));
 				kupac.setIme(resultSet.getString("ime"));
 				kupac.setPrezime(resultSet.getString("prezime"));

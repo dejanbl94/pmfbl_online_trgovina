@@ -8,39 +8,38 @@ import java.util.ArrayList;
 import java.util.List;
 import Database.DbConnectionPool;
 import Database.iDAO.iDAO;
-import Entity.Narudzba;
+import Entity.ArtikalNarudzbe;
 import QueryBuilder.QueryBuilder;
 
-public class NarudzbaDAO implements iDAO<Narudzba> {
+public class ArtikalDAO implements iDAO<ArtikalNarudzbe> {
 	static DbConnectionPool pool;
 
-	public NarudzbaDAO() {
+	public ArtikalDAO() {
 		pool = DbConnectionPool.getInstance();
 	}
 
 	@Override
-	public List<Narudzba> getAll(Object kupacId) throws SQLException {
+	public List<ArtikalNarudzbe> getAll(Object narudzbaId) throws SQLException {
 		PreparedStatement statement = null;
 		ResultSet resultSet = null;
 
-		List<Narudzba> listaNarudzbi = new ArrayList<Narudzba>();
+		List<ArtikalNarudzbe> listaArtikala = new ArrayList<ArtikalNarudzbe>();
 
 		try (Connection connection = DbConnectionPool.getConnection()) {
-			statement = connection.prepareStatement(QueryBuilder.Narudzba.GET_FOR_KUPAC);
+			statement = connection.prepareStatement(QueryBuilder.Narudzba.GET_ARTIKAL_NARUDZBE);
 
-			statement.setInt(1, (Integer) kupacId);
+			statement.setInt(1, (Integer) narudzbaId);
 
 			resultSet = statement.executeQuery();
 			while (resultSet.next()) {
-				Narudzba narudzba = new Narudzba();
+				ArtikalNarudzbe artikal = new ArtikalNarudzbe();
 				
-				narudzba.setId(resultSet.getInt("id"));
-				narudzba.setKupacId(resultSet.getInt("kupac_id"));
-				narudzba.setTrgovacId(resultSet.getInt("trgovac_id"));
-				narudzba.setDatumIsporuke(resultSet.getString("datum_isporuke"));
-				narudzba.setDatumNarudzbe(resultSet.getString("datum_narudzbe"));
-				narudzba.setNapomena(resultSet.getString("napomena"));
-				listaNarudzbi.add(narudzba);
+				artikal.setNarudzba_id(resultSet.getInt("narudzba_id"));
+				artikal.setProizvod_id(resultSet.getInt("proizvod_id"));
+				artikal.setKolicina(resultSet.getInt("kolicina"));
+				artikal.setCijenaPoKomadu(resultSet.getDouble("cijena_po_komadu"));
+				artikal.setId(resultSet.getInt("id"));
+				listaArtikala.add(artikal);
 			}
 		} catch (Exception ex) {
 			System.err.println(ex.getLocalizedMessage());
@@ -52,23 +51,23 @@ public class NarudzbaDAO implements iDAO<Narudzba> {
 				resultSet.close();
 			}
 		}
-		return listaNarudzbi;
+		return listaArtikala;
 	}
 
 	@Override
-	public Narudzba getBy(Object predicate) throws SQLException {
+	public ArtikalNarudzbe getBy(Object predicate) throws SQLException {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public boolean add(Narudzba entity) throws SQLException {
+	public boolean add(ArtikalNarudzbe entity) throws SQLException {
 		// TODO Auto-generated method stub
 		return false;
 	}
 
 	@Override
-	public boolean update(Narudzba entity) throws SQLException {
+	public boolean update(ArtikalNarudzbe entity) throws SQLException {
 		// TODO Auto-generated method stub
 		return false;
 	}

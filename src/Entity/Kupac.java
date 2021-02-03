@@ -3,10 +3,11 @@ package Entity;
 public class Kupac {
 	
 	private String korisnickoIme, ime, prezime, lozinka, telefon, adresa, grad, drzava, postanskiBroj, pol, email;
-
-	public Kupac(String korisnickoIme, String ime, String prezime, String telefon, String adresa, String grad,
+	private int id;
+	public Kupac(int id, String korisnickoIme, String ime, String prezime, String telefon, String adresa, String grad,
 			String drzava, String postanskiBroj, String email, String pol, String lozinka) {
 		super();
+		this.id = id;
 		this.korisnickoIme = korisnickoIme;
 		this.ime = ime;
 		this.prezime = prezime;
@@ -20,6 +21,14 @@ public class Kupac {
 		this.lozinka = lozinka;
 	}
 	
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
+
 	public Kupac() {}
 
 	public void setLozinka(String lozinka) {

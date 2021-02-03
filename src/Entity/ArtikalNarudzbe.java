@@ -14,6 +14,8 @@ public class ArtikalNarudzbe {
 		this.cijenaPoKomadu = cijenaPoKomadu;
 		this.id = id;
 	}
+	
+	public ArtikalNarudzbe() {}
 
 	public int getNarudzba_id() {
 		return narudzba_id;

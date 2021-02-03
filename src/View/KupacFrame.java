@@ -11,31 +11,32 @@ import javax.swing.BorderFactory;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JTable;
 import javax.swing.JTextField;
 
 import Controller.KupacController;
-import Entity.Kupac;
 
 public class KupacFrame extends JFrame {
 	private static final long serialVersionUID = -5049402758510944027L;
 	
 	private KupacController kupacController;
+	private NarudzbePanel panelNarudzbe;
 	
 	public KupacFrame(String title) {
 		super();
 		
 		setToolbarIcon(); 
-		
 		kupacPanel = new JPanel();
-		// Set controller.
+		panelNarudzbe = new NarudzbePanel();
 		// Add login panel to the main frame.
-		this.getContentPane().add(BorderLayout.LINE_START, kupacPanel);
+		this.getContentPane().setLayout(new BorderLayout());
+		add(BorderLayout.WEST, kupacPanel);
+		add(BorderLayout.EAST, panelNarudzbe);
 		// Adjust the layout.
 		adjust();
 	}
-	
 	private void adjust() {
-		setSize(900, 500);
+		setSize(900, 550);
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		setLocationRelativeTo(null);
 		// Set layout.
@@ -65,6 +66,7 @@ public class KupacFrame extends JFrame {
 		// Add components.
 		setGridBag(kupacPanel);
 	}
+	
 	
 	private void setToolbarIcon() {
 		try {
@@ -166,10 +168,90 @@ public class KupacFrame extends JFrame {
 	}
 	
 	public void setIme(String ime) {
-		this.ime.setText(ime);
+		this.imeTxt.setText(ime);
+	}
+	
+	public JTextField getImeTxt() {
+		return imeTxt;
+	}
+
+	public void setImeTxt(JTextField imeTxt) {
+		this.imeTxt = imeTxt;
+	}
+
+	public JTextField getPrezimeTxt() {
+		return prezimeTxt;
+	}
+
+	public void setPrezimeTxt(String prezime) {
+		this.prezimeTxt.setText(prezime);
+	}
+
+	public JTextField getGradTxt() {
+		return gradTxt;
+	}
+
+	public void setGradTxt(String grad) {
+		this.gradTxt.setText(grad);
+	}
+
+	public JTextField getDrzavaTxt() {
+		return drzavaTxt;
+	}
+
+	public void setDrzavaTxt(String drzavaTxt) {
+		this.drzavaTxt.setText(drzavaTxt);
+	}
+
+	public JTextField getAdresaTxt() {
+		return adresaTxt;
+	}
+
+	public void setAdresaTxt(String adresaTxt) {
+		this.adresaTxt.setText(adresaTxt);
+	}
+
+	public JTextField getEmailTxt() {
+		return emailTxt;
+	}
+
+	public void setEmailTxt(String emailTxt) {
+		this.emailTxt.setText(emailTxt);
+	}
+
+	public JTextField getPostanskiBrojTxt() {
+		return postanskiBrojTxt;
+	}
+
+	public void setPostanskiBrojTxt(String postanskiBrojTxt) {
+		this.postanskiBrojTxt.setText(postanskiBrojTxt);
+	}
+
+	public JTextField getTelefonTxt() {
+		return telefonTxt;
+	}
+
+	public void setTelefonTxt(String telefonTxt) {
+		this.telefonTxt.setText(telefonTxt);
+	}
+	
+	public JFrame getKupacFrame() {
+		return this;
+	}
+	public void setKupacId(int kupacId) {
+		this.kupacId = kupacId;
+	}
+	
+	public NarudzbePanel getNarudzbePanel() {
+		return this.panelNarudzbe;
+	}
+
+	public int getId() {
+		return this.kupacId;
 	}
 	
 	private JPanel kupacPanel;
 	private JLabel ime, prezime, grad, adresa, drzava, email, postanskiBroj, telefon;
 	private JTextField imeTxt, prezimeTxt, gradTxt, drzavaTxt, adresaTxt, emailTxt, postanskiBrojTxt, telefonTxt;
+	private int kupacId;
 }

@@ -52,7 +52,18 @@ public class DbConnectionPool {
 			counter = 0;
 
 		// Uzmi slobodnu konekciju iz pool-a.
-		return connections[counter % MAX_CONNECTIONS];
+		Connection con = connections[counter % MAX_CONNECTIONS];
+		
+		/*System.out.println("Current connection:");
+		int preIndex = connections[0].getClass().getCanonicalName().length();
+		System.out.printf("\nConnection %2d : %s\n", counter, con.toString().substring(preIndex));
+		
+		System.out.println("All connections");
+		for (int i = 0; i < connections.length; i++) {
+			System.out.printf("\nConnection %2d : %s\n", counter, connections[i].toString().substring(preIndex));
+		}
+*/
+		return con;
 	}
 	
 	private static final String host = "localhost";

@@ -10,7 +10,7 @@ import javax.swing.UnsupportedLookAndFeelException;
 
 import com.formdev.flatlaf.FlatLightLaf;
 
-import Controller.LoginController;
+import Controller.MainController;
 
 public class Startup {
 	
@@ -26,7 +26,8 @@ public class Startup {
 			public void run() {
 
 				InitialFrame mainFrame = new InitialFrame("Online trgovina");
-				LoginController controller = new LoginController(mainFrame);
+				KupacFrame frame = new KupacFrame("Profil");
+				MainController controller = new MainController(mainFrame, frame);
 				mainFrame.setSize(new Dimension(300, 120));
 				mainFrame.setResizable(false);
 				mainFrame.setLocationRelativeTo(null);
