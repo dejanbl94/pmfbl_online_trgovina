@@ -2,7 +2,6 @@ package Service;
 
 import java.sql.SQLException;
 import java.util.List;
-
 import Database.DAO.ArtikalDAO;
 import Database.DAO.NarudzbaDAO;
 import Entity.ArtikalNarudzbe;
@@ -29,9 +28,7 @@ public class NarudzbaService {
 	
 	public List<ArtikalNarudzbe> getAllArtikalNarudzbe(int narudzbaId) {
 		try {
-			var lsita = artikalDAO.getAll(narudzbaId);
-			System.out.println("TEST");
-			return lsita;
+			return artikalDAO.getAll(narudzbaId);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}

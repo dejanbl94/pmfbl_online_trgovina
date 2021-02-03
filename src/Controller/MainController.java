@@ -2,21 +2,25 @@ package Controller;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JTable;
-import javax.swing.table.DefaultTableModel;
-
 import Database.DAO.ArtikalDAO;
 import Database.DAO.KupacDAO;
 import Database.DAO.NarudzbaDAO;
+import Database.DAO.ProizvodDAO;
 import Entity.ArtikalNarudzbe;
 import Entity.Kupac;
 import Entity.Narudzba;
+import Entity.Proizvod;
 import Service.KupacService;
 import Service.NarudzbaService;
+import Service.ProizvodService;
+import View.DetaljiNarudzbeFrame;
 import View.InitialFrame;
 import View.KupacFrame;
 import View.LoginFrame;
@@ -28,10 +32,11 @@ public class MainController extends BaseController {
 
 	private KupacService kupacService;
 	private NarudzbaService narudzbaService;
+	private ProizvodService proizvodService;
 
 	private InitialFrame initialFrame;
 	private KupacFrame kupacFrame;
-	
+
 	public MainController(InitialFrame frame, KupacFrame kupacFrame) {
 		super();
 		setInitialFrame(frame);
@@ -39,6 +44,7 @@ public class MainController extends BaseController {
 		getInitialFrame().addNavigateToLoginListener(new NavigateToLoginListener());
 		getInitialFrame().addComboListener(new NavigateToLoginListener());
 		this.kupacService = new KupacService(new KupacDAO());
+		this.proizvodService = new ProizvodService(new ProizvodDAO());
 		this.narudzbaService = new NarudzbaService(new NarudzbaDAO(), new ArtikalDAO());
 	}
 
@@ -50,12 +56,12 @@ public class MainController extends BaseController {
 		}
 		return false;
 	}
-	
+
 	public List<Narudzba> getAll(int kupacId) {
 		listaNarudzbi = narudzbaService.getAll(kupacId);
 		return listaNarudzbi;
 	}
-	
+
 	public List<ArtikalNarudzbe> getArtikli(int narudzbaId) {
 		listaArtikala = narudzbaService.getAllArtikalNarudzbe(narudzbaId);
 		return listaArtikala;
@@ -68,13 +74,56 @@ public class MainController extends BaseController {
 	public InitialFrame getInitialFrame() {
 		return this.initialFrame;
 	}
-	
+
 	public void setKupacFrame(KupacFrame frame) {
 		this.kupacFrame = frame;
 	}
-	
+
 	public KupacFrame getKupacFrame() {
 		return this.kupacFrame;
+	}
+
+	class MouseTableListener implements MouseListener {
+		
+		@Override
+		public void mouseClicked(MouseEvent e) {
+			System.out.println(e.getID());
+			if (e.getClickCount() == 1) {
+				JTable target = (JTable) e.getSource();
+				int row = target.getSelectedRow();
+				String narudzbaID = target.getModel().getValueAt(row, 4).toString();
+				System.out.println(narudzbaID);
+				DetaljiNarudzbeFrame artikliFrame = new DetaljiNarudzbeFrame();
+				populateProizvodiTable(artikliFrame, Integer.parseInt(narudzbaID));
+				artikliFrame.setVisible(true);
+			}
+
+		}
+
+		@Override
+		public void mousePressed(MouseEvent e) {
+			// TODO Auto-generated method stub
+
+		}
+
+		@Override
+		public void mouseReleased(MouseEvent e) {
+			// TODO Auto-generated method stub
+
+		}
+
+		@Override
+		public void mouseEntered(MouseEvent e) {
+			// TODO Auto-generated method stub
+
+		}
+
+		@Override
+		public void mouseExited(MouseEvent e) {
+			// TODO Auto-generated method stub
+
+		}
+
 	}
 
 	// Event handling classes. Decoupling controller from UI.
@@ -102,7 +151,7 @@ public class MainController extends BaseController {
 			try {
 				// Check if kupac exists.
 				if (kupacService.kupacExists(this.loginFrame.getKorisnickoIme(), this.loginFrame.getLozinka())) {
-					//kupacFrame = new KupacFrame("Profile", table);
+					// kupacFrame = new KupacFrame("Profile", table);
 					kupacFrame.setVisible(true);
 					// Get kupac.
 					Kupac kupac = kupacService.getByUsername(this.loginFrame.getKorisnickoIme());
@@ -128,22 +177,39 @@ public class MainController extends BaseController {
 
 		}
 	}
-	
+
 	private void populateTable(KupacFrame frame) {
 		listaNarudzbi = getAll(frame.getId());
-		String[][] data = new String[listaNarudzbi.size()][listaNarudzbi.size()+1];
+		String[][] data = new String[listaNarudzbi.size()][listaNarudzbi.size() + 2];
 		for (int i = 0; i < listaNarudzbi.size(); i++) {
 			listaArtikala = getArtikli(listaNarudzbi.get(i).getId());
 			double sum = listaArtikala.stream().mapToDouble(ArtikalNarudzbe::getCijenaPoKomadu).sum();
 			data[i][0] = listaNarudzbi.get(i).getDatumNarudzbe();
-			data[i][1] = listaNarudzbi.get(i).getDatumIsporuke() == null ? "Na čekanju..." : listaNarudzbi.get(i).getDatumIsporuke();
+			data[i][1] = listaNarudzbi.get(i).getDatumIsporuke() == null ? "Na čekanju..."
+					: listaNarudzbi.get(i).getDatumIsporuke();
 			data[i][2] = listaNarudzbi.get(i).getNapomena() == null ? "-" : listaNarudzbi.get(i).getNapomena();
 			data[i][3] = String.valueOf(sum);
+			data[i][4] = String.valueOf(listaNarudzbi.get(i).getId());
 		}
 		frame.getNarudzbePanel().setData(data);
 		frame.getNarudzbePanel().setupTable();
+		kupacFrame.getNarudzbePanel().addMouseListener(new MouseTableListener());
 	}
 	
+	private void populateProizvodiTable(DetaljiNarudzbeFrame frame, int narudzbaId) {
+		listaProizvoda = proizvodService.getAll(narudzbaId);
+		String[][] data = new String[listaProizvoda.size()][4];
+		for (int i = 0; i < listaProizvoda.size(); i++) {
+			data[i][0] = listaProizvoda.get(i).getNaziv();
+			data[i][1] = String.valueOf(listaProizvoda.get(i).getKolicina());
+			data[i][2] = String.valueOf(listaProizvoda.get(i).getCijena());
+			data[i][3] = listaProizvoda.get(i).getOpis();
+		}
+		frame.getArtikliPanel().setData(data);
+		frame.getArtikliPanel().setupTable();
+		
+	}
+
 	private void setKupacInfo(KupacFrame kupacFrame, Kupac kupac) {
 		kupacFrame.setIme(kupac.getIme());
 		kupacFrame.setPrezimeTxt(kupac.getPrezime());
@@ -155,7 +221,8 @@ public class MainController extends BaseController {
 		kupacFrame.setTelefonTxt(kupac.getTelefon());
 		kupacFrame.setPostanskiBrojTxt(kupac.getPostanskiBroj());
 	}
-	
+
 	private List<Narudzba> listaNarudzbi;
 	private List<ArtikalNarudzbe> listaArtikala;
+	private List<Proizvod> listaProizvoda;
 }

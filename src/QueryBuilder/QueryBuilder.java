@@ -30,4 +30,9 @@ public final class QueryBuilder {
 		
 		public static final String GET_ARTIKAL_NARUDZBE = "SELECT * FROM artikal_narudzbe WHERE narudzba_id = ?";
 	}
+	
+	public static class Proizvod {
+		
+		public static final String GET_PROIZVOD_NARUDZBE = "SELECT * FROM artikal_narudzbe AS an INNER JOIN proizvod AS pr ON an.proizvod_id = pr.id WHERE narudzba_id = ?";
+	}
 }
