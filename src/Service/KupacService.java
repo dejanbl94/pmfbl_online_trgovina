@@ -21,7 +21,7 @@ public class KupacService {
 		if (kupac == null)
 			return null;
 		
-		return kupacDAO.getBy(username);
+		return kupac;
 	}
 	
 	public boolean kupacExists(String username, char[] charedPassword) throws SQLException {

@@ -131,7 +131,7 @@ public class TrgovacDAO implements iDAO<Trgovac> {
 	}
 
 	@Override
-	public List<Trgovac> getAll(Object predicate) throws SQLException {
+	public List<Trgovac> getAll(Object predicate, Object filter) throws SQLException {
 		// TODO Auto-generated method stub
 		return null;
 	}

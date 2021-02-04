@@ -15,12 +15,8 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
-import Controller.KupacController;
-
 public class KupacFrame extends JFrame {
 	private static final long serialVersionUID = -5049402758510944027L;
-	
-	private KupacController kupacController;
 	private NarudzbePanel panelNarudzbe;
 	
 	public KupacFrame(String title) {
@@ -82,14 +78,6 @@ public class KupacFrame extends JFrame {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
-	}
-	
-	public KupacController getKupacController() {
-		return this.kupacController;
-	}
-
-	public void setKupacController(KupacController kupacController) {
-		this.kupacController = kupacController;
 	}
 	
 	private void setGridBag(JPanel loginPanel) {

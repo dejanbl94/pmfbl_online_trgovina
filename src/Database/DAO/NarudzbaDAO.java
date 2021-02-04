@@ -21,15 +21,19 @@ public class NarudzbaDAO implements iDAO<Narudzba> {
 	}
 
 	@Override
-	public List<Narudzba> getAll(Object kupacId) throws SQLException {
+	public List<Narudzba> getAll(Object kupacId, Object filter) throws SQLException {
 		PreparedStatement statement = null;
 		ResultSet resultSet = null;
 
 		List<Narudzba> listaNarudzbi = new ArrayList<Narudzba>();
 
 		try (Connection connection = DatabaseConnection.getInstance().getConnection()) {
-			statement = connection.prepareStatement(QueryBuilder.Narudzba.GET_FOR_KUPAC);
-
+			
+			if ((String)filter == "Kupac") {
+				statement = (connection.prepareStatement(QueryBuilder.Narudzba.GET_FOR_KUPAC));
+			} else if ((String) filter == "Trgovac") {
+				statement = (connection.prepareStatement(QueryBuilder.Narudzba.GET_FOR_TRGOVAC));
+			}
 			statement.setInt(1, (Integer) kupacId);
 
 			resultSet = statement.executeQuery();

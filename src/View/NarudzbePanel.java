@@ -15,7 +15,7 @@ public class NarudzbePanel extends JPanel {
 	private JTable table;
 
 	public NarudzbePanel() {
-		setBorder(BorderFactory.createCompoundBorder(BorderFactory.createTitledBorder("Narudzbe "),
+		setBorder(BorderFactory.createCompoundBorder(BorderFactory.createTitledBorder("Narudžbe "),
 				BorderFactory.createEmptyBorder(15, 15, 15, 15)));
 	}
 

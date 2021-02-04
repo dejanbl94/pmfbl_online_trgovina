@@ -17,9 +17,9 @@ public class NarudzbaService {
 		this.artikalDAO = artikalDAO;
 	}
 	
-	public List<Narudzba> getAll(int kupacId) {
+	public List<Narudzba> getAll(int kupacId, String filter) {
 		try {
-			return narudzbaDAO.getAll(kupacId);
+			return narudzbaDAO.getAll(kupacId, filter);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -28,7 +28,7 @@ public class NarudzbaService {
 	
 	public List<ArtikalDTO> getAllArtikalNarudzbe(int narudzbaId) {
 		try {
-			return artikalDAO.getAll(narudzbaId);
+			return artikalDAO.getAll(narudzbaId, null);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}

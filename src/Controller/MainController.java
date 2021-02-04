@@ -2,6 +2,8 @@ package Controller;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.sql.SQLException;
@@ -15,35 +17,41 @@ import Database.DAO.ArtikalDAO;
 import Database.DAO.KupacDAO;
 import Database.DAO.NarudzbaDAO;
 import Database.DAO.ProizvodDAO;
+import Database.DAO.TrgovacDAO;
 import Entity.Kupac;
 import Entity.Narudzba;
 import Entity.Proizvod;
+import Entity.Trgovac;
 import Entity.DTO.ArtikalDTO;
 import Service.ArtikalService;
 import Service.KupacService;
 import Service.NarudzbaService;
 import Service.ProizvodService;
+import Service.TrgovacService;
 import View.DetaljiNarudzbeFrame;
 import View.InitialFrame;
 import View.KupacFrame;
 import View.LoginFrame;
 import View.ProizvodiFrame;
+import View.TrgovacFrame;
 
-public class MainController extends BaseController {
+public class MainController {
 
-	private static final Logger LOGGER = Logger.getLogger(KupacController.class.getSimpleName());
+	private static final Logger LOGGER = Logger.getLogger(MainController.class.getSimpleName());
 
-	public MainController(InitialFrame frame, KupacFrame kupacFrame) {
+	public MainController(InitialFrame frame, KupacFrame kupacFrame, TrgovacFrame trgovacFrame) {
 		super();
 		setInitialFrame(frame);
 		setKupacFrame(kupacFrame);
-		getInitialFrame().addNavigateToLoginListener(new NavigateToLoginListener());
-		getInitialFrame().addComboListener(new NavigateToLoginListener());
+		setTrgovacFrame(trgovacFrame);
+		getInitialFrame().addNavigateToLoginListener(new LoginBtnListener());
+		getInitialFrame().addComboListener(new ComboListener());
 		getKupacFrame().addActionListener(new ProductsListener());
 		this.kupacService = new KupacService(new KupacDAO());
 		this.proizvodService = new ProizvodService(new ProizvodDAO());
 		this.narudzbaService = new NarudzbaService(new NarudzbaDAO(), new ArtikalDAO());
 		this.artikalService = new ArtikalService(new ArtikalDAO());
+		this.trgovacService = new TrgovacService(new TrgovacDAO());
 	}
 
 	/** Event handling navigated by the controller. **/
@@ -92,14 +100,14 @@ public class MainController extends BaseController {
 
 		}
 	}
-	
+
 	class ProductsListener implements ActionListener {
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			setProizvodiFrame(new ProizvodiFrame());
 			proizvodi = proizvodService.getProizvodi();
-			
+
 			String[][] data = new String[proizvodi.size()][4];
 			for (int i = 0; i < proizvodi.size(); i++) {
 				data[i][0] = proizvodi.get(i).getNaziv();
@@ -114,9 +122,9 @@ public class MainController extends BaseController {
 			proizvodiFrame.setVisible(true);
 		}
 	}
-	
+
 	class OrdersMouseListener implements MouseListener {
-		
+
 		@Override
 		public void mouseClicked(MouseEvent e) {
 			System.out.println(MainController.this.narudzbaId);
@@ -128,40 +136,40 @@ public class MainController extends BaseController {
 				String opis = target.getModel().getValueAt(row, 1).toString();
 				Double cijena = Double.parseDouble(target.getModel().getValueAt(row, 2).toString());
 				int proizvodId = Integer.parseInt(target.getModel().getValueAt(row, 3).toString());
-				
+
 				ArtikalDTO artikal = new ArtikalDTO(narudzbeCounter++, proizvodId, 1, cijena);
 				getProizvodiFrame().addOrderBtnListener(new OrderBtnListener(artikal, naziv));
 			}
-			
+
 		}
 
 		@Override
 		public void mousePressed(MouseEvent e) {
 			// TODO Auto-generated method stub
-			
+
 		}
 
 		@Override
 		public void mouseReleased(MouseEvent e) {
 			// TODO Auto-generated method stub
-			
+
 		}
 
 		@Override
 		public void mouseEntered(MouseEvent e) {
 			// TODO Auto-generated method stub
-			
+
 		}
 
 		@Override
 		public void mouseExited(MouseEvent e) {
 			// TODO Auto-generated method stub
-			
+
 		}
-		
+
 	}
 
-	class NavigateToLoginListener implements ActionListener {
+	class LoginBtnListener implements ActionListener {
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
@@ -170,16 +178,17 @@ public class MainController extends BaseController {
 			loginFrame.addLoginBtnListener(new LoginListener(loginFrame));
 		}
 	}
-	
+
 	class OrderBtnListener implements ActionListener {
 
 		private ArtikalDTO artikal;
 		private String naziv;
-		
+
 		public OrderBtnListener(ArtikalDTO artikal, String naziv) {
 			this.artikal = artikal;
 			this.naziv = naziv;
 		}
+
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			if (artikalService.insert(artikal)) {
@@ -198,18 +207,36 @@ public class MainController extends BaseController {
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
+
+			System.out.println(MainController.role);
 			try {
-				// Check if kupac exists.
-				if (kupacService.kupacExists(this.loginFrame.getKorisnickoIme(), this.loginFrame.getLozinka())) {
-					kupacFrame.setVisible(true);
-					Kupac kupac = kupacService.getByUsername(this.loginFrame.getKorisnickoIme());
-					setKupacInfo(kupacFrame, kupac);
-					kupacFrame.setKupacId(kupac.getId());
-					populateTable(kupacFrame);
-					this.loginFrame.refresh();
-				} else {
-					this.loginFrame.setErrorMessage("Kupac nije pronađen");
-					return;
+				
+				if (MainController.role == "Kupac") {
+					if (kupacService.kupacExists(this.loginFrame.getKorisnickoIme(), this.loginFrame.getLozinka())) {
+						kupacFrame.setVisible(true);
+						Kupac kupac = kupacService.getByUsername(this.loginFrame.getKorisnickoIme());
+						setKupacInfo(kupacFrame, kupac);
+						kupacFrame.setKupacId(kupac.getId());
+						populateTable(kupacFrame);
+						this.loginFrame.refresh();
+						this.loginFrame.setErrorMessage("");
+					} else {
+						this.loginFrame.setErrorMessage("Kupac nije pronađen");
+						return;
+					}
+				} else if (MainController.role == "Trgovac") {
+					if (trgovacService.trgovacExists(this.loginFrame.getKorisnickoIme(), this.loginFrame.getLozinka())) {
+						trgovacFrame.setVisible(true);
+						Trgovac trgovac = trgovacService.getByUsername(this.loginFrame.getKorisnickoIme());
+						setTrgovacInfo(trgovacFrame, trgovac);
+						this.loginFrame.setErrorMessage("");
+						trgovacFrame.setTrgovacId(trgovac.getId());
+						populateTableTrgovac(trgovacFrame);
+						this.loginFrame.refresh();
+					} else {
+						this.loginFrame.setErrorMessage("Trgovac nije pronađen");
+						return;
+					}
 				}
 			} catch (SQLException e1) {
 				e1.printStackTrace();
@@ -217,13 +244,18 @@ public class MainController extends BaseController {
 		}
 	}
 
-	class ComboListener implements ActionListener {
+	class ComboListener implements ItemListener {
 
 		@Override
-		public void actionPerformed(ActionEvent e) {
-			System.out.println(e.getActionCommand());
+		public void itemStateChanged(ItemEvent e) {
+			if (e.getStateChange() == ItemEvent.SELECTED) {
+				Object item = e.getItem();
+				System.out.println(item);
+				MainController.role = item.toString();
+			}
 
 		}
+
 	}
 
 	class DiscardOrderListener implements ActionListener {
@@ -278,6 +310,24 @@ public class MainController extends BaseController {
 		frame.getArtikliPanel().setupTable();
 
 	}
+	
+	private void populateTableTrgovac(TrgovacFrame frame) {
+		listaNarudzbi = getAllForTrgovac(frame.getId());
+		String[][] data = new String[listaNarudzbi.size()][5];
+		for (int i = 0; i < listaNarudzbi.size(); i++) {
+			listaArtikala = getArtikli(listaNarudzbi.get(i).getId());
+			double sum = listaArtikala.stream().mapToDouble(ArtikalDTO::getCijenaKomad).sum();
+			data[i][0] = listaNarudzbi.get(i).getDatumNarudzbe();
+			data[i][1] = listaNarudzbi.get(i).getDatumIsporuke() == null ? "na čekanju..."
+					: listaNarudzbi.get(i).getDatumIsporuke();
+			data[i][2] = listaNarudzbi.get(i).getNapomena() == null ? "-" : listaNarudzbi.get(i).getNapomena();
+			data[i][3] = String.valueOf(sum);
+			data[i][4] = String.valueOf(listaNarudzbi.get(i).getId());
+		}
+		frame.getNarudzbePanel().setData(data);
+		frame.getNarudzbePanel().setupTable();
+		//kupacFrame.getNarudzbePanel().addMouseListener(new MouseTableListener());
+	}
 
 	public boolean exists(String username, char[] charedPassword) {
 		try {
@@ -290,7 +340,12 @@ public class MainController extends BaseController {
 
 	/** Accessors **/
 	public List<Narudzba> getAll(int kupacId) {
-		listaNarudzbi = narudzbaService.getAll(kupacId);
+		listaNarudzbi = narudzbaService.getAll(kupacId, "Kupac");
+		return listaNarudzbi;
+	}
+	
+	public List<Narudzba> getAllForTrgovac(int kupacId) {
+		listaNarudzbi = narudzbaService.getAll(kupacId, "Trgovac");
 		return listaNarudzbi;
 	}
 
@@ -306,7 +361,7 @@ public class MainController extends BaseController {
 	public InitialFrame getInitialFrame() {
 		return this.initialFrame;
 	}
-	
+
 	public void setProizvodiFrame(ProizvodiFrame frame) {
 		this.proizvodiFrame = frame;
 	}
@@ -314,12 +369,21 @@ public class MainController extends BaseController {
 	public ProizvodiFrame getProizvodiFrame() {
 		return this.proizvodiFrame;
 	}
+
 	public void setKupacFrame(KupacFrame frame) {
 		this.kupacFrame = frame;
 	}
 
 	public KupacFrame getKupacFrame() {
 		return this.kupacFrame;
+	}
+
+	public void setTrgovacFrame(TrgovacFrame frame) {
+		this.trgovacFrame = frame;
+	}
+
+	public TrgovacFrame getTrgovacFrame() {
+		return this.trgovacFrame;
 	}
 
 	private void setKupacInfo(KupacFrame kupacFrame, Kupac kupac) {
@@ -333,6 +397,14 @@ public class MainController extends BaseController {
 		kupacFrame.setTelefonTxt(kupac.getTelefon());
 		kupacFrame.setPostanskiBrojTxt(kupac.getPostanskiBroj());
 	}
+	
+	private void setTrgovacInfo(TrgovacFrame trgovacFrame, Trgovac trgovac) {
+		trgovacFrame.setKorisnickoTxt(trgovac.getKorisnickoIme());
+		trgovacFrame.setImeTxt(trgovac.getIme());
+		trgovacFrame.setPrezimeTxt(trgovac.getPrezime());
+		trgovacFrame.setTelefonTxt(trgovac.getTelefon());
+		trgovacFrame.setEmailTxt(trgovac.getEmail());
+	}
 
 	private List<Narudzba> listaNarudzbi = new ArrayList<Narudzba>();
 	private List<ArtikalDTO> listaArtikala = new ArrayList<ArtikalDTO>();
@@ -343,11 +415,14 @@ public class MainController extends BaseController {
 	private NarudzbaService narudzbaService;
 	private ProizvodService proizvodService;
 	private ArtikalService artikalService;
+	private TrgovacService trgovacService;
 
 	private InitialFrame initialFrame;
 	private KupacFrame kupacFrame;
 	private ProizvodiFrame proizvodiFrame;
-	
+	private TrgovacFrame trgovacFrame;
+
 	private String narudzbaId;
 	private static int narudzbeCounter = 0;
+	private static String role = "";
 }

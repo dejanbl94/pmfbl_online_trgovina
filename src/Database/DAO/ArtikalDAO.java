@@ -23,7 +23,7 @@ public class ArtikalDAO implements iDAO<ArtikalDTO> {
 	}
 
 	@Override
-	public List<ArtikalDTO> getAll(Object narudzbaId) throws SQLException {
+	public List<ArtikalDTO> getAll(Object narudzbaId, Object filter) throws SQLException {
 		PreparedStatement statement = null;
 		ResultSet resultSet = null;
 

@@ -16,7 +16,7 @@ public class ProizvodService {
 
 	public List<Proizvod> getAll(int narudzbaId) {
 		try {
-			return proizvodDAO.getAll(narudzbaId);
+			return proizvodDAO.getAll(narudzbaId, null);
 		} catch (SQLException e) {
 			System.err.print(e.getLocalizedMessage());
 		}

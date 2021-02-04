@@ -29,6 +29,8 @@ public final class QueryBuilder {
 		
 		public static final String GET_FOR_KUPAC = "SELECT * FROM narudzba WHERE kupac_id = ?";
 		
+		public static final String GET_FOR_TRGOVAC = "SELECT * FROM narudzba WHERE trgovac_id = ?";
+		
 		public static final String GET_ARTIKAL_NARUDZBE = "SELECT * FROM artikal_narudzbe WHERE narudzba_id = ?";
 		
 		public static final String DELETE = "DELETE FROM narudzba WHERE id = ?";
@@ -43,7 +45,11 @@ public final class QueryBuilder {
 	
 	public static class Artikal {
 
-		
 		public static final String INSERT = "INSERT INTO artikal_narudzbe (narudzba_id, proizvod_id, kolicina, cijena_po_komadu) VALUES (?, ?, ?, ?)";
+	}
+	
+	public static class ProdajnoMjesto {
+		
+		public static final String GET_ALL = "SELECT * FROM prodajno_mjesto";
 	}
 }

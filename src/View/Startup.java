@@ -27,14 +27,15 @@ public class Startup {
 			@Override
 			public void run() {
 
-				InitialFrame mainFrame = new InitialFrame("Online trgovina");
-				KupacFrame frame = new KupacFrame("Profil");
-				MainController controller = new MainController(mainFrame, frame);
-				mainFrame.setSize(new Dimension(300, 120));
-				mainFrame.setResizable(false);
-				mainFrame.setLocationRelativeTo(null);
-				mainFrame.setVisible(true);
-				mainFrame.setDefaultLookAndFeelDecorated(true);
+				InitialFrame main = new InitialFrame("Online trgovina");
+				KupacFrame kupac = new KupacFrame("Profil");
+				TrgovacFrame trgovac = new TrgovacFrame("Trgovac");
+				MainController controller = new MainController(main, kupac, trgovac);
+				main.setSize(new Dimension(300, 120));
+				main.setResizable(false);
+				main.setLocationRelativeTo(null);
+				main.setVisible(true);
+				main.setDefaultLookAndFeelDecorated(true);
 			}
 			
 		} );

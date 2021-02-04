@@ -5,6 +5,7 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemListener;
 import java.io.File;
 import java.io.IOException;
 import javax.imageio.ImageIO;
@@ -21,7 +22,7 @@ public class InitialFrame extends JFrame {
 	@SuppressWarnings("rawtypes")
 	private JComboBox combo;
 	private LoginFrame loginFrame;
-	static final String[] comboItems = { "Kupac", "Trgovac" };
+	static final String[] comboItems = { "Izaberi", "Kupac", "Trgovac" };
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public InitialFrame(String title) {
@@ -36,7 +37,6 @@ public class InitialFrame extends JFrame {
 		loginBtn = new JButton("Prijava");
 		registerBtn = new JButton("Registracija");
 		combo = new JComboBox(comboItems);
-		combo.setBackground(new Color(142, 209, 195));
 		combo.setSelectedIndex(0);
 
 		// Add components to the layout
@@ -48,8 +48,8 @@ public class InitialFrame extends JFrame {
 		this.loginBtn.addActionListener(actionListener);
 	}
 
-	public void addComboListener(ActionListener actionListener) {
-		this.combo.addActionListener(actionListener);
+	public void addComboListener(ItemListener itemListener) {
+		this.combo.addItemListener(itemListener);
 	}
 
 	public LoginFrame getLoginFrame() {

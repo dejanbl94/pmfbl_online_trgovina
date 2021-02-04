@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import Controller.KupacController;
 import Database.DatabaseConnection;
 import Database.DbConnectionPool;
 import Database.iDAO.iDAO;
@@ -17,7 +16,7 @@ import QueryBuilder.QueryBuilder;
 
 public class KupacDAO implements iDAO<Kupac> {
 
-	private static final Logger LOGGER = Logger.getLogger( KupacController.class.getSimpleName());
+	private static final Logger LOGGER = Logger.getLogger( KupacDAO.class.getSimpleName());
 	static DbConnectionPool pool;
 
 	public KupacDAO() {
@@ -146,7 +145,7 @@ public class KupacDAO implements iDAO<Kupac> {
 	}
 
 	@Override
-	public List<Kupac> getAll(Object predicate) throws SQLException {
+	public List<Kupac> getAll(Object predicate, Object filter) throws SQLException {
 		// TODO Auto-generated method stub
 		return null;
 	}

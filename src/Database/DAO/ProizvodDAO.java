@@ -21,7 +21,7 @@ public class ProizvodDAO implements iDAO<Proizvod> {
 		}
 
 	@Override
-	public List<Proizvod> getAll(Object narudzbaId) throws SQLException {
+	public List<Proizvod> getAll(Object narudzbaId, Object filter) throws SQLException {
 		PreparedStatement statement = null;
 		ResultSet resultSet = null;
 

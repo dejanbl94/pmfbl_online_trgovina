@@ -3,9 +3,11 @@ package Entity;
 public class Trgovac {
 	
 	private String korisnickoIme, ime, prezime, lozinka, pol, telefon, email, prodajnoMjestoId;
+	private int id;
 	
-	public Trgovac(String korisnickoIme, String ime, String prezime, String lozinka, String pol, String telefon,
+	public Trgovac(int id, String korisnickoIme, String ime, String prezime, String lozinka, String pol, String telefon,
 			String email, int prodajnoMjestId) {
+		this.id = id;
 		this.korisnickoIme = korisnickoIme;
 		this.ime = ime;
 		this.prezime = prezime;
@@ -16,6 +18,14 @@ public class Trgovac {
 		this.prodajnoMjestId = prodajnoMjestId;
 	}
 	
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
+
 	public Trgovac() {}
 
 	public String getProdajnoMjestoId() {
