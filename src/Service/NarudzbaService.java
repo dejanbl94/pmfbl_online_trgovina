@@ -35,4 +35,13 @@ public class NarudzbaService {
 		return null;
 	}
 	
+	public boolean delete(int narudzbaId) {
+		try {
+			return narudzbaDAO.delete(narudzbaId);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return false;
+	}
+	
 }

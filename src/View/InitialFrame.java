@@ -1,5 +1,6 @@
 package View;
 
+import java.awt.Color;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -10,6 +11,8 @@ import javax.imageio.ImageIO;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
+import javax.swing.border.Border;
+import javax.swing.border.LineBorder;
 
 public class InitialFrame extends JFrame {
 	private static final long serialVersionUID = 1L;
@@ -33,6 +36,7 @@ public class InitialFrame extends JFrame {
 		loginBtn = new JButton("Prijava");
 		registerBtn = new JButton("Registracija");
 		combo = new JComboBox(comboItems);
+		combo.setBackground(new Color(142, 209, 195));
 		combo.setSelectedIndex(0);
 
 		// Add components to the layout

@@ -1,8 +1,11 @@
 package View;
 
+import java.awt.BorderLayout;
+import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
 import javax.imageio.ImageIO;
+import javax.swing.JButton;
 import javax.swing.JFrame;
 
 public class DetaljiNarudzbeFrame extends JFrame {
@@ -13,11 +16,23 @@ public class DetaljiNarudzbeFrame extends JFrame {
 
 		setToolbarIcon();
 
+		setLayout(new BorderLayout());
 		artikliPanel = new ArtikliPanel();
+		buttonOtkazi = new JButton("Otkaži narudžbu");
+		buttonOtkazi.setEnabled(false);
 		// Add login panel to the main frame.
-		this.getContentPane().add(artikliPanel);
+		add(BorderLayout.NORTH, artikliPanel);
+		add(BorderLayout.SOUTH, buttonOtkazi);
 		// Adjust the layout.
 		adjust();
+	}
+	
+	public void addDiscardOrderBtnListener(ActionListener listener) {
+		this.buttonOtkazi.addActionListener(listener);
+	}
+	
+	public void enableRemoveBtn() {
+		buttonOtkazi.setEnabled(true);
 	}
 
 	private void adjust() {
@@ -40,4 +55,5 @@ public class DetaljiNarudzbeFrame extends JFrame {
 	}
 
 	private ArtikliPanel artikliPanel;
+	private JButton buttonOtkazi;
 }

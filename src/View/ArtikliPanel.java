@@ -1,5 +1,8 @@
 package View;
 
+import java.awt.Color;
+import java.awt.Font;
+
 import javax.swing.BorderFactory;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -16,6 +19,10 @@ public class ArtikliPanel extends JPanel {
 	public void setupTable() {
 		table = new JTable(data, columnNames);
 		table.setBounds(1, 1, 50, 50); 
+		table.getTableHeader().setOpaque(true);
+		table.getTableHeader().setBackground(new Color(142, 209, 195));
+		table.getTableHeader().setForeground(Color.BLACK);
+		table.getTableHeader().setFont(table.getFont().deriveFont(Font.BOLD, 12f));
         JScrollPane sp = new JScrollPane(table); 
         add(sp); 
 	}

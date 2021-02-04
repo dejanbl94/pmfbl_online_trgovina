@@ -29,6 +29,8 @@ public final class QueryBuilder {
 		public static final String GET_FOR_KUPAC = "SELECT * FROM narudzba WHERE kupac_id = ?";
 		
 		public static final String GET_ARTIKAL_NARUDZBE = "SELECT * FROM artikal_narudzbe WHERE narudzba_id = ?";
+		
+		public static final String DELETE = "DELETE FROM narudzba WHERE id = ?";
 	}
 	
 	public static class Proizvod {

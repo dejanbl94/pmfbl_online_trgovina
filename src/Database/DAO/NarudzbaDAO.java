@@ -33,7 +33,7 @@ public class NarudzbaDAO implements iDAO<Narudzba> {
 			resultSet = statement.executeQuery();
 			while (resultSet.next()) {
 				Narudzba narudzba = new Narudzba();
-				
+
 				narudzba.setId(resultSet.getInt("id"));
 				narudzba.setKupacId(resultSet.getInt("kupac_id"));
 				narudzba.setTrgovacId(resultSet.getInt("trgovac_id"));
@@ -56,6 +56,30 @@ public class NarudzbaDAO implements iDAO<Narudzba> {
 	}
 
 	@Override
+	public boolean delete(Object narudzbaId) throws SQLException {
+		PreparedStatement statement = null;
+		ResultSet resultSet = null;
+		
+		try (Connection connection = DbConnectionPool.getConnection()) {
+			statement = connection.prepareStatement(QueryBuilder.Narudzba.DELETE);
+			
+			statement.setInt(1, (Integer)narudzbaId);
+			statement.execute();
+			return true;
+		} catch (Exception ex) {
+			System.err.println(ex.getLocalizedMessage());
+		} finally {
+			if (statement != null) {
+				statement.close();
+			}
+			if (resultSet != null) {
+				resultSet.close();
+			}
+		}
+		return false;
+	}
+
+	@Override
 	public Narudzba getBy(Object predicate) throws SQLException {
 		// TODO Auto-generated method stub
 		return null;
@@ -69,12 +93,6 @@ public class NarudzbaDAO implements iDAO<Narudzba> {
 
 	@Override
 	public boolean update(Narudzba entity) throws SQLException {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public boolean delete(Object predicate) throws SQLException {
 		// TODO Auto-generated method stub
 		return false;
 	}

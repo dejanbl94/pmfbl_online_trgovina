@@ -8,6 +8,8 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import Database.DAO.ArtikalDAO;
 import Database.DAO.KupacDAO;
@@ -36,6 +38,7 @@ public class MainController extends BaseController {
 
 	private InitialFrame initialFrame;
 	private KupacFrame kupacFrame;
+	private DetaljiNarudzbeFrame narudzbaFrame;
 
 	public MainController(InitialFrame frame, KupacFrame kupacFrame) {
 		super();
@@ -95,7 +98,14 @@ public class MainController extends BaseController {
 				System.out.println(narudzbaID);
 				DetaljiNarudzbeFrame artikliFrame = new DetaljiNarudzbeFrame();
 				populateProizvodiTable(artikliFrame, Integer.parseInt(narudzbaID));
+				
+				artikliFrame.addDiscardOrderBtnListener(new DiscardOrderListener(Integer.parseInt(narudzbaID), row));
+				String statusNarudzbe = target.getModel().getValueAt(row, 1).toString();
+				if (statusNarudzbe.contains("Na")) {
+					artikliFrame.enableRemoveBtn();
+				}
 				artikliFrame.setVisible(true);
+				
 			}
 
 		}
@@ -177,10 +187,28 @@ public class MainController extends BaseController {
 
 		}
 	}
+	
+	class DiscardOrderListener implements ActionListener {
+
+		private int narudzbaId, row;
+		public DiscardOrderListener(int narudzbaId, int row) {
+			this.narudzbaId = narudzbaId;
+			this.row = row;
+		}
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			if(narudzbaService.delete(narudzbaId)) {
+				JOptionPane.showMessageDialog(null, "Narudžba uspješno otkazana");
+				getKupacFrame().getNarudzbePanel().refresh(row);
+				populateTable(getKupacFrame());
+			}
+			
+		}
+	}
 
 	private void populateTable(KupacFrame frame) {
 		listaNarudzbi = getAll(frame.getId());
-		String[][] data = new String[listaNarudzbi.size()][listaNarudzbi.size() + 2];
+		String[][] data = new String[listaNarudzbi.size()][5];
 		for (int i = 0; i < listaNarudzbi.size(); i++) {
 			listaArtikala = getArtikli(listaNarudzbi.get(i).getId());
 			double sum = listaArtikala.stream().mapToDouble(ArtikalNarudzbe::getCijenaPoKomadu).sum();
