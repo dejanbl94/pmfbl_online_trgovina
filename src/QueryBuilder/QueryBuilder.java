@@ -2,7 +2,8 @@ package QueryBuilder;
 
 public final class QueryBuilder {
 
-	// Ovo je samo staticna helper klasa, ne trebaju nam instance.
+	/**Staticna helper klasa**/
+	
 	private QueryBuilder() {
 	}
 
@@ -36,5 +37,13 @@ public final class QueryBuilder {
 	public static class Proizvod {
 		
 		public static final String GET_PROIZVOD_NARUDZBE = "SELECT * FROM artikal_narudzbe AS an INNER JOIN proizvod AS pr ON an.proizvod_id = pr.id WHERE narudzba_id = ?";
+		
+		public static final String GET_ALL = "SELECT * FROM proizvod";
+	}
+	
+	public static class Artikal {
+
+		
+		public static final String INSERT = "INSERT INTO artikal_narudzbe (narudzba_id, proizvod_id, kolicina, cijena_po_komadu) VALUES (?, ?, ?, ?)";
 	}
 }

@@ -4,8 +4,8 @@ import java.sql.SQLException;
 import java.util.List;
 import Database.DAO.ArtikalDAO;
 import Database.DAO.NarudzbaDAO;
-import Entity.ArtikalNarudzbe;
 import Entity.Narudzba;
+import Entity.DTO.ArtikalDTO;
 
 public class NarudzbaService {
 
@@ -26,7 +26,7 @@ public class NarudzbaService {
 		return null;
 	}
 	
-	public List<ArtikalNarudzbe> getAllArtikalNarudzbe(int narudzbaId) {
+	public List<ArtikalDTO> getAllArtikalNarudzbe(int narudzbaId) {
 		try {
 			return artikalDAO.getAll(narudzbaId);
 		} catch (SQLException e) {

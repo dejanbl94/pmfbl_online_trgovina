@@ -4,10 +4,12 @@ import java.awt.BorderLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
 import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
+import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -33,10 +35,11 @@ public class KupacFrame extends JFrame {
 		add(BorderLayout.EAST, panelNarudzbe);
 		// Adjust the layout.
 		adjust();
+		add(BorderLayout.SOUTH, proizvodiBtn);
 	}
 	private void adjust() {
 		setSize(900, 550);
-		setDefaultCloseOperation(EXIT_ON_CLOSE);
+		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 		setLocationRelativeTo(null);
 		// Set layout.
 		kupacPanel.setLayout(new GridBagLayout());
@@ -47,11 +50,12 @@ public class KupacFrame extends JFrame {
 		ime = new JLabel("Ime: ");
 		prezime = new JLabel("Prezime: ");
 		grad = new JLabel("Grad: ");
-		drzava = new JLabel("Drzava: ");
+		drzava = new JLabel("Država: ");
 		adresa = new JLabel("Adresa: ");
 		email = new JLabel("Email: ");
-		postanskiBroj = new JLabel("Postanski broj: ");
+		postanskiBroj = new JLabel("Poštanski broj: ");
 		telefon = new JLabel("Telefon");
+		proizvodiBtn = new JButton("Proizvodi");
 		
 		imeTxt = new JTextField(20);
 		prezimeTxt = new JTextField(20);
@@ -64,6 +68,10 @@ public class KupacFrame extends JFrame {
 
 		// Add components.
 		setGridBag(kupacPanel);
+	}
+	
+	public void addActionListener(ActionListener listener) {
+		this.proizvodiBtn.addActionListener(listener);
 	}
 	
 	
@@ -252,5 +260,6 @@ public class KupacFrame extends JFrame {
 	private JPanel kupacPanel;
 	private JLabel ime, prezime, grad, adresa, drzava, email, postanskiBroj, telefon;
 	private JTextField imeTxt, prezimeTxt, gradTxt, drzavaTxt, adresaTxt, emailTxt, postanskiBrojTxt, telefonTxt;
+	private JButton proizvodiBtn;
 	private int kupacId;
 }

@@ -22,4 +22,13 @@ public class ProizvodService {
 		}
 		return null;
 	}
+	
+	public List<Proizvod> getProizvodi() {
+		try {
+			return proizvodDAO.get();
+		} catch (SQLException e) {
+			System.err.print(e.getLocalizedMessage());
+		}
+		return null;
+	}
 }

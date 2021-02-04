@@ -9,6 +9,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import Controller.KupacController;
+import Database.DatabaseConnection;
 import Database.DbConnectionPool;
 import Database.iDAO.iDAO;
 import Entity.Kupac;
@@ -20,14 +21,14 @@ public class KupacDAO implements iDAO<Kupac> {
 	static DbConnectionPool pool;
 
 	public KupacDAO() {
-		pool = DbConnectionPool.getInstance();
+		//pool = DbConnectionPool.getInstance();
 	}
 
 	public boolean exists(String korisnickoIme, String password) throws SQLException {
 		PreparedStatement statement = null;
 		ResultSet resultSet = null;
 
-		try (Connection connection = DbConnectionPool.getConnection()) {
+		try (Connection connection = DatabaseConnection.getInstance().getConnection()) {
 			statement = connection.prepareStatement(QueryBuilder.Kupac.GET);
 			
 			statement.setString(1, korisnickoIme);
@@ -60,7 +61,7 @@ public class KupacDAO implements iDAO<Kupac> {
 
 		Kupac kupac = new Kupac();
 
-		try (Connection connection = DbConnectionPool.getConnection()) {
+		try (Connection connection = DatabaseConnection.getInstance().getConnection()) {
 			statement = connection.prepareStatement(QueryBuilder.Kupac.GET_BY_IME);
 			
 			statement.setString(1, korisnickoIme.toString());
@@ -99,7 +100,7 @@ public class KupacDAO implements iDAO<Kupac> {
 		PreparedStatement statement = null;
 		ResultSet resultSet = null;
 
-		try (Connection connection = DbConnectionPool.getConnection()) {
+		try (Connection connection = DatabaseConnection.getInstance().getConnection()) {
 			if (!exists(kupac.getKorisnickoIme(), kupac.getLozinka())) {
 				statement = connection.prepareStatement(QueryBuilder.Kupac.INSERT);
 				
@@ -146,6 +147,12 @@ public class KupacDAO implements iDAO<Kupac> {
 
 	@Override
 	public List<Kupac> getAll(Object predicate) throws SQLException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<Kupac> get() throws SQLException {
 		// TODO Auto-generated method stub
 		return null;
 	}

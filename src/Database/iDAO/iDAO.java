@@ -6,6 +6,7 @@ import java.util.List;
 public interface iDAO<T extends Object> {
 	
 	// Define CRUD contracts.
+	public List<T> get() throws SQLException;
 	public T getBy(Object predicate) throws SQLException;
 	public List<T> getAll(Object predicate) throws SQLException;
 	public boolean add(T entity) throws SQLException;

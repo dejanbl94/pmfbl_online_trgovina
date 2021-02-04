@@ -6,6 +6,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+
+import Database.DatabaseConnection;
 import Database.DbConnectionPool;
 import Database.iDAO.iDAO;
 import Entity.Narudzba;
@@ -15,7 +17,7 @@ public class NarudzbaDAO implements iDAO<Narudzba> {
 	static DbConnectionPool pool;
 
 	public NarudzbaDAO() {
-		pool = DbConnectionPool.getInstance();
+		//pool = DbConnectionPool.getInstance();
 	}
 
 	@Override
@@ -25,7 +27,7 @@ public class NarudzbaDAO implements iDAO<Narudzba> {
 
 		List<Narudzba> listaNarudzbi = new ArrayList<Narudzba>();
 
-		try (Connection connection = DbConnectionPool.getConnection()) {
+		try (Connection connection = DatabaseConnection.getInstance().getConnection()) {
 			statement = connection.prepareStatement(QueryBuilder.Narudzba.GET_FOR_KUPAC);
 
 			statement.setInt(1, (Integer) kupacId);
@@ -60,7 +62,7 @@ public class NarudzbaDAO implements iDAO<Narudzba> {
 		PreparedStatement statement = null;
 		ResultSet resultSet = null;
 		
-		try (Connection connection = DbConnectionPool.getConnection()) {
+		try (Connection connection = DatabaseConnection.getInstance().getConnection()) {
 			statement = connection.prepareStatement(QueryBuilder.Narudzba.DELETE);
 			
 			statement.setInt(1, (Integer)narudzbaId);
@@ -95,5 +97,11 @@ public class NarudzbaDAO implements iDAO<Narudzba> {
 	public boolean update(Narudzba entity) throws SQLException {
 		// TODO Auto-generated method stub
 		return false;
+	}
+
+	@Override
+	public List<Narudzba> get() throws SQLException {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

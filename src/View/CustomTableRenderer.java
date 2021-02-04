@@ -20,9 +20,9 @@ public class CustomTableRenderer extends DefaultTableCellRenderer {
         if (table.getColumnName(column).compareToIgnoreCase("Datum isporuke") == 0) {
             String versionVal = (String) value;
 
-            if (versionVal.contains("Na čekanju...")) {
-                c.setForeground(Color.BLUE);
-                c.setFont(new Font("Dialog", Font.BOLD, 12));
+            if (versionVal.contains("na čekanju...")) {
+                c.setForeground(new Color(249, 99, 50));
+                c.setFont(new Font("Dialog", Font.BOLD, 13));
             } else {
                 c.setForeground(Color.BLACK);
                 c.setFont(new Font("Dialog", Font.PLAIN, 12));

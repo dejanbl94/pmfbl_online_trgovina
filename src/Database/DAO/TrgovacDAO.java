@@ -4,6 +4,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
+
+import Database.DatabaseConnection;
 import Database.DbConnectionPool;
 import Database.iDAO.iDAO;
 import Entity.Trgovac;
@@ -14,14 +16,14 @@ public class TrgovacDAO implements iDAO<Trgovac> {
 	static DbConnectionPool pool;
 
 	public TrgovacDAO() {
-		pool = DbConnectionPool.getInstance();
+		//pool = DbConnectionPool.getInstance();
 	}
 
 	public boolean exists(String korisnickoIme, String password) throws SQLException {
 		PreparedStatement statement = null;
 		ResultSet resultSet = null;
 
-		try (Connection connection = DbConnectionPool.getConnection()) {
+		try (Connection connection = DatabaseConnection.getInstance().getConnection()) {
 			statement = connection.prepareStatement(QueryBuilder.Trgovac.GET);
 			
 			statement.setString(1, korisnickoIme);
@@ -53,7 +55,7 @@ public class TrgovacDAO implements iDAO<Trgovac> {
 
 		Trgovac trgovac = new Trgovac();
 
-		try (Connection connection = DbConnectionPool.getConnection()) {
+		try (Connection connection = DatabaseConnection.getInstance().getConnection()) {
 			statement = connection.prepareStatement(QueryBuilder.Trgovac.GET_BY_IME);
 			
 			statement.setString(1, korisnickoIme.toString());
@@ -87,7 +89,7 @@ public class TrgovacDAO implements iDAO<Trgovac> {
 		PreparedStatement statement = null;
 		ResultSet resultSet = null;
 
-		try (Connection connection = DbConnectionPool.getConnection()) {
+		try (Connection connection = DatabaseConnection.getInstance().getConnection()) {
 			if (!exists(trgovac.getKorisnickoIme(), trgovac.getLozinka())) {
 				statement = connection.prepareStatement(QueryBuilder.Trgovac.INSERT);
 				
@@ -130,6 +132,12 @@ public class TrgovacDAO implements iDAO<Trgovac> {
 
 	@Override
 	public List<Trgovac> getAll(Object predicate) throws SQLException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<Trgovac> get() throws SQLException {
 		// TODO Auto-generated method stub
 		return null;
 	}

@@ -6,7 +6,7 @@ import java.sql.SQLException;
 
 public class DbConnectionPool {
 
-	private static final int MAX_CONNECTIONS = 10;
+	private static final int MAX_CONNECTIONS = 200;
 	private static final Object LOCK = new Object();
 
 	private static volatile DbConnectionPool instance = null;
