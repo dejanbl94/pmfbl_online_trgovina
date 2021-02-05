@@ -62,6 +62,7 @@ public class TrgovacDAO implements iDAO<Trgovac> {
 			
 			resultSet = statement.executeQuery();
 			if (resultSet.next()) {
+				trgovac.setId(resultSet.getInt("id"));
 				trgovac.setKorisnickoIme(resultSet.getString("korisnicko_ime"));
 				trgovac.setIme(resultSet.getString("ime"));
 				trgovac.setPrezime(resultSet.getString("prezime"));

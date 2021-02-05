@@ -3,7 +3,6 @@ package Service;
 import java.sql.SQLException;
 
 import Database.DAO.TrgovacDAO;
-import Entity.Kupac;
 import Entity.Trgovac;
 
 public class TrgovacService {

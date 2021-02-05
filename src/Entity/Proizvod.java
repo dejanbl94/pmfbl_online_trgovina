@@ -66,4 +66,10 @@ public class Proizvod {
 		this.id = id;
 	}
 
+	@Override
+	public String toString() {
+		return "Proizvod [naziv=" + naziv + ", opis=" + opis + ", cijena=" + cijena + ", kolicina=" + kolicina + ", id="
+				+ id + "]";
+	}
+
 }

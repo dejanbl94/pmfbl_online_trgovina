@@ -39,14 +39,14 @@ public class MainController {
 
 	private static final Logger LOGGER = Logger.getLogger(MainController.class.getSimpleName());
 
-	public MainController(InitialFrame frame, KupacFrame kupacFrame, TrgovacFrame trgovacFrame) {
+	public MainController(InitialFrame frame) {
 		super();
 		setInitialFrame(frame);
-		setKupacFrame(kupacFrame);
-		setTrgovacFrame(trgovacFrame);
+		//setKupacFrame(kupacFrame);
+		//setTrgovacFrame(trgovacFrame);
 		getInitialFrame().addNavigateToLoginListener(new LoginBtnListener());
 		getInitialFrame().addComboListener(new ComboListener());
-		getKupacFrame().addActionListener(new ProductsListener());
+		//getKupacFrame().addActionListener(new ProductsListener());
 		this.kupacService = new KupacService(new KupacDAO());
 		this.proizvodService = new ProizvodService(new ProizvodDAO());
 		this.narudzbaService = new NarudzbaService(new NarudzbaDAO(), new ArtikalDAO());
@@ -207,12 +207,12 @@ public class MainController {
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
-
-			System.out.println(MainController.role);
 			try {
-				
 				if (MainController.role == "Kupac") {
 					if (kupacService.kupacExists(this.loginFrame.getKorisnickoIme(), this.loginFrame.getLozinka())) {
+						KupacFrame kupacFrame = new KupacFrame("Kupac");
+						setKupacFrame(kupacFrame);
+						kupacFrame.addActionListener(new ProductsListener());
 						kupacFrame.setVisible(true);
 						Kupac kupac = kupacService.getByUsername(this.loginFrame.getKorisnickoIme());
 						setKupacInfo(kupacFrame, kupac);
@@ -226,6 +226,8 @@ public class MainController {
 					}
 				} else if (MainController.role == "Trgovac") {
 					if (trgovacService.trgovacExists(this.loginFrame.getKorisnickoIme(), this.loginFrame.getLozinka())) {
+						TrgovacFrame trgovacFrame = new TrgovacFrame("Trgovac");
+						setTrgovacFrame(trgovacFrame);
 						trgovacFrame.setVisible(true);
 						Trgovac trgovac = trgovacService.getByUsername(this.loginFrame.getKorisnickoIme());
 						setTrgovacInfo(trgovacFrame, trgovac);
@@ -294,7 +296,7 @@ public class MainController {
 		}
 		frame.getNarudzbePanel().setData(data);
 		frame.getNarudzbePanel().setupTable();
-		kupacFrame.getNarudzbePanel().addMouseListener(new MouseTableListener());
+		frame.getNarudzbePanel().addMouseListener(new MouseTableListener());
 	}
 
 	private void populateProizvodiTable(DetaljiNarudzbeFrame frame, int narudzbaId) {
@@ -302,9 +304,9 @@ public class MainController {
 		String[][] data = new String[listaProizvoda.size()][5];
 		for (int i = 0; i < listaProizvoda.size(); i++) {
 			data[i][0] = listaProizvoda.get(i).getNaziv();
-			data[i][1] = String.valueOf(listaProizvoda.get(i).getCijena());
-			data[i][2] = listaProizvoda.get(i).getOpis();
-			data[i][3] = String.valueOf(listaProizvoda.get(i).getId());
+			data[i][1] = String.valueOf(listaProizvoda.get(i).getKolicina());
+			data[i][2] = String.valueOf(listaProizvoda.get(i).getCijena());
+			data[i][3] = listaProizvoda.get(i).getOpis() == null ? "-" : listaProizvoda.get(i).getOpis();
 		}
 		frame.getArtikliPanel().setData(data);
 		frame.getArtikliPanel().setupTable();

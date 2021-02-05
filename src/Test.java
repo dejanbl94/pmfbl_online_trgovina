@@ -2,8 +2,8 @@ import java.sql.SQLException;
 
 import Database.DAO.ArtikalDAO;
 import Database.DAO.KupacDAO;
-import Entity.ArtikalNarudzbe;
 import Entity.Kupac;
+import Entity.DTO.ArtikalDTO;
 
 public class Test {
 
@@ -23,7 +23,7 @@ public class Test {
 			System.out.println(postoji2);
 			System.out.println(postoji3);
 			System.out.println(kupac);
-			java.util.List<ArtikalNarudzbe> lista = artikalDAO.getAll(10100);
+			java.util.List<ArtikalDTO> lista = artikalDAO.getAll(10100, null);
 			System.out.println(lista);
 			
 			// Test insert
