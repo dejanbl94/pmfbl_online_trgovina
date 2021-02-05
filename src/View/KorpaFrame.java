@@ -4,25 +4,24 @@ import java.awt.BorderLayout;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
+
 import javax.imageio.ImageIO;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 
-public class ProizvodiFrame extends JFrame{
+public class KorpaFrame extends JFrame {
 	private static final long serialVersionUID = 1L;
-	
-	public ProizvodiFrame() {
+	public KorpaFrame() {
 		setToolbarIcon();
 		setLayout(new BorderLayout());
-		panel = new ProizvodiPanel();
-		btnKorpa = new JButton("Pregledaj korpu");
+		panel = new KorpaPanel();
+		btnOrder = new JButton("Naruči");
 		add(BorderLayout.NORTH, panel);
-		add(BorderLayout.SOUTH, btnKorpa);
+		add(BorderLayout.SOUTH, btnOrder);
 		adjust();
 	}
-	
-	public void addCartBtnListener(ActionListener listener) {
-		this.btnKorpa.addActionListener(listener);
+	public void addOrderBtnListener(ActionListener listener) {
+		this.btnOrder.addActionListener(listener);
 	}
 
 	private void setToolbarIcon() {
@@ -34,15 +33,16 @@ public class ProizvodiFrame extends JFrame{
 		}
 	}
 	
+	public KorpaPanel getKorpaTablePanel() {
+		return this.panel;
+	}
+	
 	private void adjust() {
-		setSize(600, 545);
+		setSize(550, 545);
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 		setLocationRelativeTo(null);
 	}
 	
-	public ProizvodiPanel getProizvodiTablePanel() {
-		return this.panel;
-	}
-	private ProizvodiPanel panel;
-	private JButton btnKorpa;
+	private KorpaPanel panel;
+	private JButton btnOrder;
 }

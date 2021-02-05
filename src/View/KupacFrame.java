@@ -182,8 +182,8 @@ public class KupacFrame extends JFrame {
 		this.prezimeTxt.setText(prezime);
 	}
 
-	public JTextField getGradTxt() {
-		return gradTxt;
+	public String getGradTxt() {
+		return gradTxt.getText();
 	}
 
 	public void setGradTxt(String grad) {

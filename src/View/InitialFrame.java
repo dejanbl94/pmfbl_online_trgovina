@@ -12,8 +12,6 @@ import javax.imageio.ImageIO;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
-import javax.swing.border.Border;
-import javax.swing.border.LineBorder;
 
 public class InitialFrame extends JFrame {
 	private static final long serialVersionUID = 1L;
@@ -22,7 +20,7 @@ public class InitialFrame extends JFrame {
 	@SuppressWarnings("rawtypes")
 	private JComboBox combo;
 	private LoginFrame loginFrame;
-	static final String[] comboItems = { "Izaberi", "Kupac", "Trgovac" };
+	static final String[] comboItems = { "Kupac", "Trgovac" };
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public InitialFrame(String title) {
@@ -54,6 +52,10 @@ public class InitialFrame extends JFrame {
 
 	public LoginFrame getLoginFrame() {
 		return this.loginFrame;
+	}
+	
+	public String getComboDefaultValue() {
+		return (String) combo.getSelectedItem();
 	}
 
 	private void setGridBag() {

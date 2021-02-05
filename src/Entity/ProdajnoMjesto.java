@@ -17,6 +17,12 @@ public class ProdajnoMjesto {
 	public ProdajnoMjesto() {}
 
 
+	@Override
+	public String toString() {
+		return "ProdajnoMjesto [grad=" + grad + ", drzava=" + drzava + ", adresa=" + adresa + ", telefon=" + telefon
+				+ ", id=" + id + "]";
+	}
+
 	public int getId() {
 		return id;
 	}

@@ -1,6 +1,9 @@
 package Service;
 
+import java.sql.SQLException;
+import java.util.List;
 import Database.DAO.ProdajnoMjestoDAO;
+import Entity.ProdajnoMjesto;
 
 public class ProdajnoMjestoService {
 	
@@ -10,8 +13,14 @@ public class ProdajnoMjestoService {
 		this.prodajnoDAO = dao;
 	}
 	
-	/*public List<ProdajnoMjest> getAll() {
-		return prodajnoDAO.getAll(kupacId)
+	public List<ProdajnoMjesto> getAll() {
+		try {
+			return prodajnoDAO.get();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
 	}
-*/
+
 }

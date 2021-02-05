@@ -6,20 +6,16 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-
 import Database.DatabaseConnection;
 import Database.DbConnectionPool;
 import Database.iDAO.iDAO;
-import Entity.ArtikalNarudzbe;
-import Entity.Proizvod;
 import Entity.DTO.ArtikalDTO;
 import QueryBuilder.QueryBuilder;
 
 public class ArtikalDAO implements iDAO<ArtikalDTO> {
 	static DbConnectionPool pool;
-
+	static DatabaseConnection dbConnection;
 	public ArtikalDAO() {
-		// pool = DbConnectionPool.getInstance();
 	}
 
 	@Override

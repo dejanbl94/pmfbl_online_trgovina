@@ -49,6 +49,12 @@ public class ArtikalDTO {
 	public double getCijenaKomad() {
 		return cijenaKomad;
 	}
+	@Override
+	public String toString() {
+		return "ArtikalDTO [id=" + id + ", narudzbaId=" + narudzbaId + ", proizvodId=" + proizvodId + ", kolicina="
+				+ kolicina + ", cijenaKomad=" + cijenaKomad + "]";
+	}
+
 	public void setCijenaKomad(double cijenaKomad) {
 		this.cijenaKomad = cijenaKomad;
 	}
