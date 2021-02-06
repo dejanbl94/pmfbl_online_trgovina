@@ -1,22 +1,25 @@
 package Database.DAO;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 import Database.DatabaseConnection;
 import Database.DbConnectionPool;
 import Database.iDAO.iDAO;
+import Entity.Narudzba;
 import Entity.Trgovac;
 import QueryBuilder.QueryBuilder;
 
 public class TrgovacDAO implements iDAO<Trgovac> {
-	
+
 	static DbConnectionPool pool;
 
 	public TrgovacDAO() {
-		//pool = DbConnectionPool.getInstance();
+		// pool = DbConnectionPool.getInstance();
 	}
 
 	public boolean exists(String korisnickoIme, String password) throws SQLException {
@@ -25,7 +28,7 @@ public class TrgovacDAO implements iDAO<Trgovac> {
 
 		try (Connection connection = DatabaseConnection.getInstance().getConnection()) {
 			statement = connection.prepareStatement(QueryBuilder.Trgovac.GET);
-			
+
 			statement.setString(1, korisnickoIme);
 			statement.setString(2, password);
 
@@ -49,17 +52,21 @@ public class TrgovacDAO implements iDAO<Trgovac> {
 	}
 
 	@Override
-	public Trgovac getBy(Object korisnickoIme) throws SQLException {
+	public Trgovac getBy(Object token, String filter) throws SQLException {
 		PreparedStatement statement = null;
 		ResultSet resultSet = null;
 
 		Trgovac trgovac = new Trgovac();
 
 		try (Connection connection = DatabaseConnection.getInstance().getConnection()) {
-			statement = connection.prepareStatement(QueryBuilder.Trgovac.GET_BY_IME);
-			
-			statement.setString(1, korisnickoIme.toString());
-			
+			if (filter == null) {
+				statement = connection.prepareStatement(QueryBuilder.Trgovac.GET_BY_IME);
+			} else {
+				statement = connection.prepareStatement(QueryBuilder.Trgovac.GET_BY_PRODAJNO_MJESTO);
+			}
+
+			statement.setString(1, token.toString());
+
 			resultSet = statement.executeQuery();
 			if (resultSet.next()) {
 				trgovac.setId(resultSet.getInt("id"));
@@ -93,7 +100,7 @@ public class TrgovacDAO implements iDAO<Trgovac> {
 		try (Connection connection = DatabaseConnection.getInstance().getConnection()) {
 			if (!exists(trgovac.getKorisnickoIme(), trgovac.getLozinka())) {
 				statement = connection.prepareStatement(QueryBuilder.Trgovac.INSERT);
-				
+
 				statement.setString(1, trgovac.getKorisnickoIme());
 				statement.setString(2, trgovac.getIme());
 				statement.setString(3, trgovac.getPrezime());
@@ -101,7 +108,7 @@ public class TrgovacDAO implements iDAO<Trgovac> {
 				statement.setString(5, trgovac.getTelefon());
 				statement.setString(10, trgovac.getPol());
 				statement.setString(11, trgovac.getEmail());
-				
+
 				statement.executeUpdate();
 			} else {
 				return false;
@@ -133,13 +140,43 @@ public class TrgovacDAO implements iDAO<Trgovac> {
 
 	@Override
 	public List<Trgovac> getAll(Object predicate, Object filter) throws SQLException {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public List<Trgovac> get() throws SQLException {
-		// TODO Auto-generated method stub
-		return null;
+		PreparedStatement statement = null;
+		ResultSet resultSet = null;
+
+		List<Trgovac> trgovci = new ArrayList<Trgovac>();
+
+		try (Connection connection = DatabaseConnection.getInstance().getConnection()) {
+
+			statement = (connection.prepareStatement(QueryBuilder.Trgovac.GET_ALL));
+
+			resultSet = statement.executeQuery();
+			while (resultSet.next()) {
+				Trgovac trgovac = new Trgovac();
+
+				trgovac.setId(resultSet.getInt("id"));
+				trgovac.setKorisnickoIme(resultSet.getString("korisnicko_ime"));
+				trgovac.setIme(resultSet.getString("ime"));
+				trgovac.setPrezime(resultSet.getString("prezime"));
+				trgovac.setTelefon(resultSet.getString("telefon"));
+				trgovac.setPol(resultSet.getString("pol"));
+				trgovac.setEmail(resultSet.getString("email"));
+				trgovci.add(trgovac);
+			}
+		} catch (Exception ex) {
+			System.err.println(ex.getLocalizedMessage());
+		} finally {
+			if (statement != null) {
+				statement.close();
+			}
+			if (resultSet != null) {
+				resultSet.close();
+			}
+		}
+		return trgovci;
 	}
 }

@@ -6,7 +6,12 @@ import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
@@ -18,9 +23,11 @@ import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
 
+import com.alee.utils.FileUtils;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
@@ -31,6 +38,7 @@ import Database.DAO.NarudzbaDAO;
 import Database.DAO.ProdajnoMjestoDAO;
 import Database.DAO.ProizvodDAO;
 import Database.DAO.TrgovacDAO;
+import Entity.ArtikalNarudzbe;
 import Entity.Kupac;
 import Entity.Narudzba;
 import Entity.ProdajnoMjesto;
@@ -38,6 +46,7 @@ import Entity.Proizvod;
 import Entity.Trgovac;
 import Entity.DTO.ArtikalDTO;
 import Entity.DTO.ProizvodDTO;
+import Helper.jsonParse;
 import Service.ArtikalService;
 import Service.KupacService;
 import Service.NarudzbaService;
@@ -173,15 +182,37 @@ public class MainController {
 				String opis = target.getModel().getValueAt(row, 1).toString();
 				int proizvodId = Integer.parseInt(target.getModel().getValueAt(row, 3).toString());
 				int kupacId = getKupacFrame().getId();
-				ProdajnoMjesto matching = prodajnaMjesta.stream()
-						.filter(x -> x.getGrad().equalsIgnoreCase(getKupacFrame().getGradTxt())).findFirst()
-						.orElseGet(() -> null);
-				int trgovacId = matching == null ? 0 : matching.getId();
+				List<Integer> trgovciId = new ArrayList<Integer>();
+				for (int i = 0; i < prodajnaMjesta.size(); i++) {
+					if (prodajnaMjesta.get(i).getDrzava().equalsIgnoreCase(getKupacFrame().getDrzavaTxt())) {
+						try {
+							Trgovac trgovac = trgovacService
+									.getByProdajnoMjesto(String.valueOf(prodajnaMjesta.get(i).getId()));
+							trgovciId.add(trgovac.getId());
+						} catch (SQLException e1) {
+							// TODO Auto-generated catch block
+							e1.printStackTrace();
+						}
+					}
+				}
+				if (trgovciId.isEmpty()) {
+					List<Trgovac> sviTrgovci = trgovacService.getAll();
+					for (int i = 0; i < sviTrgovci.size(); i++) {
+						trgovciId.add(sviTrgovci.get(i).getId());
+					}
+				}
+				/*
+				 * ProdajnoMjesto matching = prodajnaMjesta.stream() .filter(x ->
+				 * x.getGrad().equalsIgnoreCase(getKupacFrame().getGradTxt())).findFirst()
+				 * .orElseGet(() -> null); int trgovacId = matching == null ? 0 :
+				 * matching.getId();
+				 */
+
 				String datumNarudzbe = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
 				Double cijena = Double.parseDouble(target.getModel().getValueAt(row, 2).toString());
 				int kolicina = 1;
 				String napomena = "";
-				proizvodService.getNaruceniProizvodi().add(new ProizvodDTO(kupacId, trgovacId, proizvodId, kolicina,
+				proizvodService.getNaruceniProizvodi().add(new ProizvodDTO(kupacId, 0, trgovciId, proizvodId, kolicina,
 						naziv, opis, datumNarudzbe, napomena, cijena));
 
 			}
@@ -228,10 +259,40 @@ public class MainController {
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			String json = writeOrdersToJSON(proizvodService.getNaruceniProizvodi());
-			List<ProizvodDTO> proizvodi = readJSONToList(json);
-			for (int i = 0; i < proizvodi.size(); i++) {
-				System.out.println(proizvodi.get(i).toString());
+			String narudzbeJSON;
+			try {
+				// Ako ne postoji drzava dodajemo narudzbu za svakog trgovca, datum isporuke
+				// oznacava da li je trgovac preuzeo narudzbu ili ne, tako da je za sada setovan
+				// na NULL.
+				// Dodajemo kao jednu narudzbu.
+				List<ProizvodDTO> productsArticles = proizvodService.getNaruceniProizvodi();
+				Narudzba narudzba = new Narudzba(productsArticles.get(0).getKupacId(), 0,
+						productsArticles.get(0).getDatumNarudzbe(), null, null);
+				narudzbaService.add(narudzba);
+
+				/** JSON serialization/deserialization **/
+				int id = narudzbaService.getLastId();
+				List<ProizvodDTO> listaNarucenihProizvoda = proizvodService.getNaruceniProizvodi();
+				for (var x : listaNarucenihProizvoda) {
+					x.setNarudzbaId(id);
+				}
+				narudzbeJSON = jsonParse.parseAndWrite(listaNarucenihProizvoda, "narudzbe_na_cekanju");
+				List<ProizvodDTO> proizvodi = jsonParse.readJSONToList(narudzbeJSON,
+						new TypeReference<List<ProizvodDTO>>() {
+						});
+				narudzbaService.setNarudzbeNaCekanju(proizvodi);
+
+				// narudzbaService.add(new Narudzba(proizvodService.getNaruceniProizvodi()))
+				for (int i = 0; i < proizvodi.size(); i++) {
+					ArtikalDTO artikal = new ArtikalDTO(id, proizvodi.get(i).getProizvodId(),
+							proizvodi.get(i).getKolicina(), proizvodi.get(i).getCijenaKomad());
+					artikalService.insert(artikal);
+				}
+				JOptionPane.showMessageDialog(null,
+						"Uspješno kreirana narudžba, uskoro ćete biti obavješteni o datumu isporuke.");
+			} catch (IOException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
 			}
 		}
 	}
@@ -267,12 +328,41 @@ public class MainController {
 						return;
 					}
 				} else if (MainController.role == "Trgovac") {
+					// Get the list of ordered items.
+					/*
+					 * ObjectMapper mapper = new ObjectMapper();
+					 * mapper.enable(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY); try
+					 * (InputStream fileStream = new
+					 * FileInputStream("src/resources/narudzbe_na_cekanju.json")) {
+					 * List<ProizvodDTO> list = mapper.readValue(fileStream, new
+					 * TypeReference<List<ProizvodDTO>>() { }); }
+					 */
+
+					List<ProizvodDTO> narudzbeNaCekanju = narudzbaService.getNarudzbeNaCekanju();
+
+					// Check if trgovac exists.
 					if (trgovacService.trgovacExists(this.loginFrame.getKorisnickoIme(),
 							this.loginFrame.getLozinka())) {
+						// Get trgovac from the database.
+						Trgovac trgovac = trgovacService.getByUsername(this.loginFrame.getKorisnickoIme());
+
+						// Check if trgovac is suitable for order processing, if so, update the
+						// trgovacId in the narudzbe table.
+						int nadjeniTrgovacId = 0;
+						int narudzbaId = narudzbeNaCekanju.get(0).getNarudzbaId();
+						if (!narudzbeNaCekanju.isEmpty()) {
+							for (int i = 0; i < narudzbeNaCekanju.get(0).getTrgovciId().size(); i++) {
+								if (narudzbeNaCekanju.get(0).getTrgovciId().get(i) == trgovac.getId()) {
+									nadjeniTrgovacId = trgovac.getId();
+									break;
+								}
+							}
+							narudzbaService.updateTrgovac(nadjeniTrgovacId, narudzbaId);
+							JOptionPane.showMessageDialog(null, "Imate novu narudžbu na čekanju");
+						}
 						TrgovacFrame trgovacFrame = new TrgovacFrame("Trgovac");
 						setTrgovacFrame(trgovacFrame);
 						trgovacFrame.setVisible(true);
-						Trgovac trgovac = trgovacService.getByUsername(this.loginFrame.getKorisnickoIme());
 						setTrgovacInfo(trgovacFrame, trgovac);
 						this.loginFrame.setErrorMessage("");
 						trgovacFrame.setTrgovacId(trgovac.getId());
@@ -336,6 +426,7 @@ public class MainController {
 			data[i][3] = String.valueOf(sum);
 			data[i][4] = String.valueOf(listaNarudzbi.get(i).getId());
 		}
+
 		frame.getNarudzbePanel().setData(data);
 		frame.getNarudzbePanel().setupTable();
 		frame.getNarudzbePanel().addMouseListener(new MouseTableListener());
@@ -385,44 +476,6 @@ public class MainController {
 		frame.getKorpaTablePanel().setData(data);
 		frame.getKorpaTablePanel().setupTable();
 
-	}
-
-	private String writeOrdersToJSON(List<ProizvodDTO> naruceniProizvodi) {
-		ObjectMapper objectMapper = new ObjectMapper();
-		// Set pretty printing of json
-		objectMapper.enable(SerializationFeature.INDENT_OUTPUT);
-		//1. Convert List of Person objects to JSON
-        String json;
-		try {
-			json = objectMapper.writeValueAsString(naruceniProizvodi);
-	        objectMapper.writeValue(Paths.get("src/resources/narudzbe.json").toFile(), json);
-	        return json;
-		} catch (JsonProcessingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return null;
-	}
-	
-	private List<ProizvodDTO> readJSONToList(String jsonString) {
-		ObjectMapper objectMapper = new ObjectMapper();
-		try {
-			List<ProizvodDTO> participantJsonList = objectMapper.readValue(jsonString, new TypeReference<List<ProizvodDTO>>(){});
-			return participantJsonList;
-		} catch (JsonParseException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (JsonMappingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return null;
 	}
 
 	public boolean exists(String username, char[] charedPassword) {

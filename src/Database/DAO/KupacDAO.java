@@ -54,7 +54,7 @@ public class KupacDAO implements iDAO<Kupac> {
 	}
 
 	@Override
-	public Kupac getBy(Object korisnickoIme) throws SQLException {
+	public Kupac getBy(Object korisnickoIme, String filter) throws SQLException {
 		PreparedStatement statement = null;
 		ResultSet resultSet = null;
 

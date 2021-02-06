@@ -17,7 +17,7 @@ public class KupacService {
 			System.err.println("Name can't be empty string");
 			return new Kupac();
 		}
-		Kupac kupac = kupacDAO.getBy(username);
+		Kupac kupac = kupacDAO.getBy(username, null);
 		if (kupac == null)
 			return null;
 		

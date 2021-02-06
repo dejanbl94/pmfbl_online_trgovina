@@ -17,6 +17,7 @@ public class NarudzbePanel extends JPanel {
 	public NarudzbePanel() {
 		setBorder(BorderFactory.createCompoundBorder(BorderFactory.createTitledBorder("Narudžbe "),
 				BorderFactory.createEmptyBorder(15, 15, 15, 15)));
+		
 	}
 
 	public void setupTable() {
@@ -34,7 +35,8 @@ public class NarudzbePanel extends JPanel {
 		
 		for (int i = 0; i < data.length; i++) {
 			for (int j = 0; j < data[i].length; j++) {
-				table.getColumnModel().getColumn(i).setCellRenderer(new CustomTableRenderer());
+				//System.out.println(table.getColumnModel().getColumn(j));
+				table.getColumnModel().getColumn(j).setCellRenderer(new CustomTableRenderer());
 			}
 		}
 		table.setBounds(20, 20, 200, 200);

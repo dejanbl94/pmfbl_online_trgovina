@@ -103,7 +103,7 @@ public class ProizvodDAO implements iDAO<Proizvod> {
 	}
 
 	@Override
-	public Proizvod getBy(Object predicate) throws SQLException {
+	public Proizvod getBy(Object token, String filter) throws SQLException {
 		// TODO Auto-generated method stub
 		return null;
 	}

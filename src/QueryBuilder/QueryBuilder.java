@@ -18,9 +18,13 @@ public final class QueryBuilder {
 
 	public static class Trgovac {
 
+		public static final String GET_ALL = "SELECT * FROM trgovac";
+		
 		public static final String GET = "SELECT * FROM trgovac WHERE korisnicko_ime = ? AND lozinka = ?";
 
 		public static final String GET_BY_IME = "SELECT * FROM trgovac WHERE korisnicko_ime = ?";
+		
+		public static final String GET_BY_PRODAJNO_MJESTO = "SELECT * FROM trgovac WHERE prodajno_mjesto_id = ?";
 
 		public static final String INSERT = "INSERT INTO trgovac ( korisnicko_ime, ime, prezime, lozinka, pol, email, prodajno_mjesto_id ) VALUES ( ?, ?, ?, ?, ?, ?, ?)";
 	}
@@ -34,6 +38,12 @@ public final class QueryBuilder {
 		public static final String GET_ARTIKAL_NARUDZBE = "SELECT * FROM artikal_narudzbe WHERE narudzba_id = ?";
 		
 		public static final String DELETE = "DELETE FROM narudzba WHERE id = ?";
+		
+		public static final String INSERT = "INSERT INTO narudzba ( kupac_id, trgovac_id, datum_narudzbe, datum_isporuke, napomena) VALUES (?, ?, ?, ?, ?)";
+		
+		public static final String GET_LAST_ID = "SELECT id FROM seminarski_ors1.narudzba ORDER BY id DESC LIMIT 1;";
+		
+		public static final String UPDATE_TRGOVAC_FOR_NARUDZBA = "UPDATE narudzba SET trgovac_id = ? WHERE id = ?";
 	}
 	
 	public static class Proizvod {

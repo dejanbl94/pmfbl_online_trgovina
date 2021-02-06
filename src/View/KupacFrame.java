@@ -1,6 +1,8 @@
 package View;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -160,6 +162,7 @@ public class KupacFrame extends JFrame {
 		gbc.gridy = 8;
 		gbc.anchor = GridBagConstraints.PAGE_START;
 		loginPanel.add(telefonTxt, gbc);
+		
 	}
 	
 	public void setIme(String ime) {
@@ -190,8 +193,8 @@ public class KupacFrame extends JFrame {
 		this.gradTxt.setText(grad);
 	}
 
-	public JTextField getDrzavaTxt() {
-		return drzavaTxt;
+	public String getDrzavaTxt() {
+		return drzavaTxt.getText();
 	}
 
 	public void setDrzavaTxt(String drzavaTxt) {
@@ -248,6 +251,6 @@ public class KupacFrame extends JFrame {
 	private JPanel kupacPanel;
 	private JLabel ime, prezime, grad, adresa, drzava, email, postanskiBroj, telefon;
 	private JTextField imeTxt, prezimeTxt, gradTxt, drzavaTxt, adresaTxt, emailTxt, postanskiBrojTxt, telefonTxt;
-	private JButton proizvodiBtn;
+	private JButton proizvodiBtn, naCekanjuBtn;
 	private int kupacId;
 }

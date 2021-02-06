@@ -17,7 +17,7 @@ public class NarudzbaDAO implements iDAO<Narudzba> {
 	static DbConnectionPool pool;
 
 	public NarudzbaDAO() {
-		//pool = DbConnectionPool.getInstance();
+		// pool = DbConnectionPool.getInstance();
 	}
 
 	@Override
@@ -28,8 +28,8 @@ public class NarudzbaDAO implements iDAO<Narudzba> {
 		List<Narudzba> listaNarudzbi = new ArrayList<Narudzba>();
 
 		try (Connection connection = DatabaseConnection.getInstance().getConnection()) {
-			
-			if ((String)filter == "Kupac") {
+
+			if ((String) filter == "Kupac") {
 				statement = (connection.prepareStatement(QueryBuilder.Narudzba.GET_FOR_KUPAC));
 			} else if ((String) filter == "Trgovac") {
 				statement = (connection.prepareStatement(QueryBuilder.Narudzba.GET_FOR_TRGOVAC));
@@ -65,11 +65,11 @@ public class NarudzbaDAO implements iDAO<Narudzba> {
 	public boolean delete(Object narudzbaId) throws SQLException {
 		PreparedStatement statement = null;
 		ResultSet resultSet = null;
-		
+
 		try (Connection connection = DatabaseConnection.getInstance().getConnection()) {
 			statement = connection.prepareStatement(QueryBuilder.Narudzba.DELETE);
-			
-			statement.setInt(1, (Integer)narudzbaId);
+
+			statement.setInt(1, (Integer) narudzbaId);
 			statement.execute();
 			return true;
 		} catch (Exception ex) {
@@ -86,15 +86,74 @@ public class NarudzbaDAO implements iDAO<Narudzba> {
 	}
 
 	@Override
-	public Narudzba getBy(Object predicate) throws SQLException {
+	public Narudzba getBy(Object predicate, String filter) throws SQLException {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public boolean add(Narudzba entity) throws SQLException {
-		// TODO Auto-generated method stub
-		return false;
+	public boolean add(Narudzba narudzba) throws SQLException {
+		PreparedStatement statement = null;
+		ResultSet resultSet = null;
+
+		try (Connection connection = DatabaseConnection.getInstance().getConnection()) {
+			statement = connection.prepareStatement(QueryBuilder.Narudzba.INSERT);
+
+			statement.setInt(1, narudzba.getKupacId());
+			statement.setInt(2, narudzba.getTrgovacId());
+			statement.setString(3, narudzba.getDatumNarudzbe());
+			statement.setString(4, narudzba.getDatumIsporuke());
+			statement.setString(5, narudzba.getNapomena());
+
+			statement.executeUpdate();
+			return false;
+		} catch (Exception ex) {
+			System.err.println(ex.getLocalizedMessage());
+		} finally {
+			if (statement != null) {
+				statement.close();
+			}
+			if (resultSet != null) {
+				resultSet.close();
+			}
+		}
+		return true;
+	}
+
+	public int getLastId() throws SQLException {
+		PreparedStatement statement = null;
+		ResultSet resultSet = null;
+		int id = 0;
+		try (Connection connection = DatabaseConnection.getInstance().getConnection()) {
+
+			statement = (connection.prepareStatement(QueryBuilder.Narudzba.GET_LAST_ID));
+			resultSet = statement.executeQuery();
+
+			while (resultSet.next()) {
+				id = resultSet.getInt("id");
+			}
+			return id;
+		} catch (Exception ex) {
+			System.err.println(ex.getLocalizedMessage());
+		} finally {
+			if (statement != null) {
+				statement.close();
+			}
+			if (resultSet != null) {
+				resultSet.close();
+			}
+		}
+		return id;
+	}
+
+	public int updateTrgovac(int trgovacId, int narudzbaId) throws SQLException {
+		PreparedStatement statement = null;
+		try (Connection connection = DatabaseConnection.getInstance().getConnection()) {
+			statement = (connection.prepareStatement(QueryBuilder.Narudzba.UPDATE_TRGOVAC_FOR_NARUDZBA));
+			statement.setInt(1, trgovacId);
+			statement.setInt(2, narudzbaId);
+			return statement.executeUpdate();
+		}
 	}
 
 	@Override

@@ -1,14 +1,19 @@
 package Entity.DTO;
 
+import java.util.List;
+
 public class ProizvodDTO {
 
-	private int kupacId, trgovacId, proizvodId, kolicina;
+	private int kupacId, proizvodId, kolicina, narudzbaId;
+	private List<Integer> trgovciId;
 	private String naziv, opis, datumNarudzbe, napomena;
-	public ProizvodDTO(int kupacId, int trgovacId, int proizvodId, int kolicina, String naziv, String opis,
+	
+	public ProizvodDTO(int kupacId, int narudzbaId, List<Integer> trgovciId, int proizvodId, int kolicina, String naziv, String opis,
 			String datumNarudzbe, String napomena, double cijenaKomad) {
 		super();
+		this.narudzbaId = narudzbaId;
 		this.kupacId = kupacId;
-		this.trgovacId = trgovacId;
+		this.trgovciId = trgovciId;
 		this.proizvodId = proizvodId;
 		this.kolicina = kolicina;
 		this.naziv = naziv;
@@ -18,6 +23,22 @@ public class ProizvodDTO {
 		this.cijenaKomad = cijenaKomad;
 	}
 	
+	public int getNarudzbaId() {
+		return narudzbaId;
+	}
+
+	public void setNarudzbaId(int narudzbaId) {
+		this.narudzbaId = narudzbaId;
+	}
+
+	public List<Integer> getTrgovciId() {
+		return trgovciId;
+	}
+
+	public void setTrgovciId(List<Integer> trgovciId) {
+		this.trgovciId = trgovciId;
+	}
+
 	public ProizvodDTO() {}
 	public String getNaziv() {
 		return naziv;
@@ -53,21 +74,16 @@ public class ProizvodDTO {
 	}
 	@Override
 	public String toString() {
-		return "ProizvodDTO [kupacId=" + kupacId + ", trgovacId=" + trgovacId + ", proizvodId=" + proizvodId
-				+ ", kolicina=" + kolicina + ", datumNarudzbe=" + datumNarudzbe + ", napomena=" + napomena
-				+ ", cijenaKomad=" + cijenaKomad + "]";
+		return "ProizvodDTO [kupacId=" + kupacId + ", proizvodId=" + proizvodId + ", kolicina=" + kolicina
+				+ ", narudzbaId=" + narudzbaId + ", trgovciId=" + trgovciId + ", naziv=" + naziv + ", opis=" + opis
+				+ ", datumNarudzbe=" + datumNarudzbe + ", napomena=" + napomena + ", cijenaKomad=" + cijenaKomad + "]";
 	}
+
 	public int getKupacId() {
 		return kupacId;
 	}
 	public void setKupacId(int kupacId) {
 		this.kupacId = kupacId;
-	}
-	public int getTrgovacId() {
-		return trgovacId;
-	}
-	public void setTrgovacId(int trgovacId) {
-		this.trgovacId = trgovacId;
 	}
 	public String getDatumNarudzbe() {
 		return datumNarudzbe;

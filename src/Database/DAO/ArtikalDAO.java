@@ -55,7 +55,7 @@ public class ArtikalDAO implements iDAO<ArtikalDTO> {
 	}
 
 	@Override
-	public ArtikalDTO getBy(Object predicate) throws SQLException {
+	public ArtikalDTO getBy(Object predicate, String filter) throws SQLException {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -69,7 +69,7 @@ public class ArtikalDAO implements iDAO<ArtikalDTO> {
 			statement = connection.prepareStatement(QueryBuilder.Artikal.INSERT);
 
 			statement.setInt(1,artikal.getNarudzbaId());
-			statement.setInt(2, artikal.getId());
+			statement.setInt(2, artikal.getProizvodId());
 			statement.setInt(3, artikal.getKolicina());
 			statement.setDouble(4, artikal.getCijenaKomad());
 

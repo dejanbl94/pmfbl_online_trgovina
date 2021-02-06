@@ -63,7 +63,7 @@ public class ProdajnoMjestoDAO implements iDAO<ProdajnoMjesto> {
 	}
 
 	@Override
-	public ProdajnoMjesto getBy(Object predicate) throws SQLException {
+	public ProdajnoMjesto getBy(Object token, String filter) throws SQLException {
 		// TODO Auto-generated method stub
 		return null;
 	}

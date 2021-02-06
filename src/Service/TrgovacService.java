@@ -1,6 +1,7 @@
 package Service;
 
 import java.sql.SQLException;
+import java.util.List;
 
 import Database.DAO.TrgovacDAO;
 import Entity.Trgovac;
@@ -28,9 +29,30 @@ public class TrgovacService {
 			System.err.println("Name can't be empty string");
 			return new Trgovac();
 		}
-		Trgovac trgovac = trgovacDAO.getBy(username);
+		Trgovac trgovac = trgovacDAO.getBy(username, null);
 		if (trgovac == null)
 			return null;
 		return trgovac;
+	}
+	
+	public Trgovac getByProdajnoMjesto(String mjestoId) throws SQLException {
+		if (mjestoId.isEmpty()) {
+			System.err.println("Mjesto id can't be empty string");
+			return new Trgovac();
+		}
+		Trgovac trgovac = trgovacDAO.getBy(mjestoId, "mjesto");
+		if (trgovac == null)
+			return null;
+		return trgovac;
+	}
+	
+	public List<Trgovac> getAll() {
+		try {
+			trgovacDAO.get();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
 	}
 }

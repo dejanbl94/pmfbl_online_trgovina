@@ -15,6 +15,15 @@ public class Narudzba {
 		this.napomena = napomena;
 	}
 	
+	public Narudzba(int kupacId, int trgovacId, String datumNarudzbe, String datumIsporuke, String napomena) {
+		super();
+		this.kupacId = kupacId;
+		this.trgovacId = trgovacId;
+		this.datumNarudzbe = datumNarudzbe;
+		this.datumIsporuke = datumIsporuke;
+		this.napomena = napomena;
+	}
+	
 	public Narudzba() {}
 	
 	public int getId() {
