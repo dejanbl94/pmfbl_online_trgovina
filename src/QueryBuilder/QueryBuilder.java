@@ -44,6 +44,8 @@ public final class QueryBuilder {
 		public static final String GET_LAST_ID = "SELECT id FROM seminarski_ors1.narudzba ORDER BY id DESC LIMIT 1;";
 		
 		public static final String UPDATE_TRGOVAC_FOR_NARUDZBA = "UPDATE narudzba SET trgovac_id = ? WHERE id = ?";
+		
+		public static final String SET_ORDER_FOR_SHIPPING = "UPDATE narudzba SET datum_isporuke = ?, napomena = ? WHERE id = ?";
 	}
 	
 	public static class Proizvod {

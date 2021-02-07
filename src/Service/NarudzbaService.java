@@ -85,4 +85,14 @@ public class NarudzbaService {
 		return 0;
 	}
 	
+	public boolean setOrderForShipping(String datumIsporuke, String napomena, int narudzbaId) {
+		try {
+			return narudzbaDAO.setOrderForShipping(datumIsporuke, napomena, narudzbaId);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return false;
+	}
+	
 }

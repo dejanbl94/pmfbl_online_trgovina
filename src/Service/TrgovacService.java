@@ -55,4 +55,14 @@ public class TrgovacService {
 		}
 		return null;
 	}
+	
+	private int narudzbaId;
+
+	public int getNarudzbaId() {
+		return narudzbaId;
+	}
+
+	public void setNarudzbaId(int narudzbaId) {
+		this.narudzbaId = narudzbaId;
+	}
 }

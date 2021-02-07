@@ -53,6 +53,7 @@ import Service.NarudzbaService;
 import Service.ProdajnoMjestoService;
 import Service.ProizvodService;
 import Service.TrgovacService;
+import View.ConfirmOrderFrame;
 import View.DetaljiNarudzbeFrame;
 import View.InitialFrame;
 import View.KorpaFrame;
@@ -91,19 +92,26 @@ public class MainController {
 		@Override
 		public void mouseClicked(MouseEvent e) {
 			if (e.getClickCount() == 1) {
+
 				JTable target = (JTable) e.getSource();
 				// Get selected row.
 				int row = target.getSelectedRow();
 				narudzbaId = target.getModel().getValueAt(row, 4).toString();
-				DetaljiNarudzbeFrame artikliFrame = new DetaljiNarudzbeFrame();
-				populateProizvodiTable(artikliFrame, Integer.parseInt(narudzbaId));
 
-				artikliFrame.addDiscardOrderBtnListener(new DiscardOrderListener(Integer.parseInt(narudzbaId), row));
-				String statusNarudzbe = target.getModel().getValueAt(row, 1).toString();
-				if (statusNarudzbe.contains("Na")) {
-					artikliFrame.enableRemoveBtn();
+				if (MainController.role == "Kupac") {
+					DetaljiNarudzbeFrame artikliFrame = new DetaljiNarudzbeFrame();
+					populateProizvodiTable(artikliFrame, Integer.parseInt(narudzbaId));
+
+					artikliFrame
+							.addDiscardOrderBtnListener(new DiscardOrderListener(Integer.parseInt(narudzbaId), row));
+					String statusNarudzbe = target.getModel().getValueAt(row, 1).toString();
+					if (statusNarudzbe.contains("Na")) {
+						artikliFrame.enableRemoveBtn();
+					}
+					artikliFrame.setVisible(true);
+				} else if (MainController.role == "Trgovac") {
+					trgovacService.setNarudzbaId(Integer.parseInt(narudzbaId));
 				}
-				artikliFrame.setVisible(true);
 			}
 		}
 
@@ -166,57 +174,65 @@ public class MainController {
 			getKorpaFrame().setVisible(true);
 
 		}
-
 	}
 
 	class OrdersMouseListener implements MouseListener {
 
 		@Override
 		public void mouseClicked(MouseEvent e) {
-			if (e.getClickCount() == 1) {
-				JTable target = (JTable) e.getSource();
-				// Get selected row.
-				int row = target.getSelectedRow();
-				// Prepare order details.
-				String naziv = target.getModel().getValueAt(row, 0).toString();
-				String opis = target.getModel().getValueAt(row, 1).toString();
-				int proizvodId = Integer.parseInt(target.getModel().getValueAt(row, 3).toString());
-				int kupacId = getKupacFrame().getId();
-				List<Integer> trgovciId = new ArrayList<Integer>();
-				for (int i = 0; i < prodajnaMjesta.size(); i++) {
-					if (prodajnaMjesta.get(i).getDrzava().equalsIgnoreCase(getKupacFrame().getDrzavaTxt())) {
-						try {
-							Trgovac trgovac = trgovacService
-									.getByProdajnoMjesto(String.valueOf(prodajnaMjesta.get(i).getId()));
-							trgovciId.add(trgovac.getId());
-						} catch (SQLException e1) {
-							// TODO Auto-generated catch block
-							e1.printStackTrace();
+
+			if (MainController.role == "Kupac") {
+
+				if (e.getClickCount() == 1) {
+					JTable target = (JTable) e.getSource();
+					// Get selected row.
+					int row = target.getSelectedRow();
+					// Prepare order details.
+					String naziv = target.getModel().getValueAt(row, 0).toString();
+					String opis = target.getModel().getValueAt(row, 1).toString();
+					int proizvodId = Integer.parseInt(target.getModel().getValueAt(row, 3).toString());
+					int kupacId = getKupacFrame().getId();
+					// Dodajemo listu trgovaca koji mogu da isporuče narudžbu, ukoliko je mjesto iz
+					// kojeg je kupac u listi prodajnih mjesta za datu drzavu.
+					List<Integer> trgovciId = new ArrayList<Integer>();
+					for (int i = 0; i < prodajnaMjesta.size(); i++) {
+						if (prodajnaMjesta.get(i).getGrad().equalsIgnoreCase(getKupacFrame().getGradTxt())) {
+							try {
+								Trgovac trgovac = trgovacService
+										.getByProdajnoMjesto(String.valueOf(prodajnaMjesta.get(i).getId()));
+								trgovciId.add(trgovac.getId());
+							} catch (SQLException e1) {
+								// TODO Auto-generated catch block
+								e1.printStackTrace();
+							}
 						}
 					}
-				}
-				if (trgovciId.isEmpty()) {
-					List<Trgovac> sviTrgovci = trgovacService.getAll();
-					for (int i = 0; i < sviTrgovci.size(); i++) {
-						trgovciId.add(sviTrgovci.get(i).getId());
+					// Ukoliko nije moguce isporuciti u dati grad posalji narudzbu na sva mjesta u
+					// drzavi kupca.
+					if (trgovciId.isEmpty()) {
+						for (int i = 0; i < prodajnaMjesta.size(); i++) {
+							if (prodajnaMjesta.get(i).getDrzava().equalsIgnoreCase(getKupacFrame().getDrzavaTxt())) {
+								try {
+									Trgovac trgovac = trgovacService
+											.getByProdajnoMjesto(String.valueOf(prodajnaMjesta.get(i).getId()));
+									trgovciId.add(trgovac.getId());
+								} catch (SQLException e1) {
+									// TODO Auto-generated catch block
+									e1.printStackTrace();
+								}
+							}
+						}
 					}
+
+					String datumNarudzbe = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+					Double cijena = Double.parseDouble(target.getModel().getValueAt(row, 2).toString());
+					int kolicina = 1;
+					String napomena = "";
+					proizvodService.getNaruceniProizvodi().add(new ProizvodDTO(kupacId, 0, trgovciId, proizvodId,
+							kolicina, naziv, opis, datumNarudzbe, napomena, cijena));
+
 				}
-				/*
-				 * ProdajnoMjesto matching = prodajnaMjesta.stream() .filter(x ->
-				 * x.getGrad().equalsIgnoreCase(getKupacFrame().getGradTxt())).findFirst()
-				 * .orElseGet(() -> null); int trgovacId = matching == null ? 0 :
-				 * matching.getId();
-				 */
-
-				String datumNarudzbe = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
-				Double cijena = Double.parseDouble(target.getModel().getValueAt(row, 2).toString());
-				int kolicina = 1;
-				String napomena = "";
-				proizvodService.getNaruceniProizvodi().add(new ProizvodDTO(kupacId, 0, trgovciId, proizvodId, kolicina,
-						naziv, opis, datumNarudzbe, napomena, cijena));
-
 			}
-
 		}
 
 		@Override
@@ -264,7 +280,6 @@ public class MainController {
 				// Ako ne postoji drzava dodajemo narudzbu za svakog trgovca, datum isporuke
 				// oznacava da li je trgovac preuzeo narudzbu ili ne, tako da je za sada setovan
 				// na NULL.
-				// Dodajemo kao jednu narudzbu.
 				List<ProizvodDTO> productsArticles = proizvodService.getNaruceniProizvodi();
 				Narudzba narudzba = new Narudzba(productsArticles.get(0).getKupacId(), 0,
 						productsArticles.get(0).getDatumNarudzbe(), null, null);
@@ -282,7 +297,7 @@ public class MainController {
 						});
 				narudzbaService.setNarudzbeNaCekanju(proizvodi);
 
-				// narudzbaService.add(new Narudzba(proizvodService.getNaruceniProizvodi()))
+				// Insert product order item for the particular order.
 				for (int i = 0; i < proizvodi.size(); i++) {
 					ArtikalDTO artikal = new ArtikalDTO(id, proizvodi.get(i).getProizvodId(),
 							proizvodi.get(i).getKolicina(), proizvodi.get(i).getCijenaKomad());
@@ -346,27 +361,38 @@ public class MainController {
 						// Get trgovac from the database.
 						Trgovac trgovac = trgovacService.getByUsername(this.loginFrame.getKorisnickoIme());
 
-						// Check if trgovac is suitable for order processing, if so, update the
-						// trgovacId in the narudzbe table.
+						// Ako se logujemo kao trgovac koji moze da odobri narudzbu, azuriramo tabelu sa
+						// njegovim ID-em za tu narudzbu i azuriramo datum isporuke.
+						// U suprotnom samo prikazujemo narudzbe za tog trgovca.
 						int nadjeniTrgovacId = 0;
-						int narudzbaId = narudzbeNaCekanju.get(0).getNarudzbaId();
+						int narudzbaId = 0;
+						boolean flag = false;
 						if (!narudzbeNaCekanju.isEmpty()) {
+							narudzbaId = narudzbeNaCekanju.get(0).getNarudzbaId();
 							for (int i = 0; i < narudzbeNaCekanju.get(0).getTrgovciId().size(); i++) {
 								if (narudzbeNaCekanju.get(0).getTrgovciId().get(i) == trgovac.getId()) {
 									nadjeniTrgovacId = trgovac.getId();
+									flag = true;
 									break;
 								}
 							}
+
+						}
+						// Azuriraj narudzbu postavi ID odgovornog trgovca.
+						if (flag) {
 							narudzbaService.updateTrgovac(nadjeniTrgovacId, narudzbaId);
-							JOptionPane.showMessageDialog(null, "Imate novu narudžbu na čekanju");
 						}
 						TrgovacFrame trgovacFrame = new TrgovacFrame("Trgovac");
 						setTrgovacFrame(trgovacFrame);
+						// Dodaj listener za potvrdu narudzbe.
 						trgovacFrame.setVisible(true);
+						trgovacFrame.addConfirmOrderListener(new ConfirmOrderListener());
 						setTrgovacInfo(trgovacFrame, trgovac);
 						this.loginFrame.setErrorMessage("");
 						trgovacFrame.setTrgovacId(trgovac.getId());
 						populateTableTrgovac(trgovacFrame);
+						if (flag)
+							JOptionPane.showMessageDialog(null, "Imate novu narudžbu na čekanju");
 						this.loginFrame.refresh();
 					} else {
 						this.loginFrame.setErrorMessage("Trgovac nije pronađen");
@@ -377,6 +403,38 @@ public class MainController {
 				e1.printStackTrace();
 			}
 		}
+	}
+
+	class ConfirmOrderListener implements ActionListener {
+
+		public ConfirmOrderListener() {
+		}
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			ConfirmOrderFrame frame = new ConfirmOrderFrame();
+			setConfirmOrderFrame(frame);
+			frame.addShipOrderActionListener(new ShipOrderListener());
+			frame.setVisible(true);
+
+		}
+
+	}
+	
+	class ShipOrderListener implements ActionListener {
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			String shippingDate = getConfirmOrderFrame().getShippingDate();
+			String shippingNote = getConfirmOrderFrame().getShippingNote();
+			int narudzbaId = trgovacService.getNarudzbaId();
+			if (narudzbaService.setOrderForShipping(shippingDate, shippingNote, narudzbaId)) {
+				JOptionPane.showMessageDialog(null, "Narudžba " + narudzbaId + " je uspješno poslata!");
+			} else {
+				JOptionPane.showMessageDialog(null, "Narudžba " + narudzbaId + " nije uspješno poslata!");
+			}
+		}
+		
 	}
 
 	class ComboListener implements ItemListener {
@@ -461,7 +519,7 @@ public class MainController {
 		}
 		frame.getNarudzbePanel().setData(data);
 		frame.getNarudzbePanel().setupTable();
-		// kupacFrame.getNarudzbePanel().addMouseListener(new MouseTableListener());
+		frame.getNarudzbePanel().addMouseListener(new MouseTableListener());
 	}
 
 	private void populateTableCart(KorpaFrame frame) {
@@ -542,6 +600,14 @@ public class MainController {
 	public TrgovacFrame getTrgovacFrame() {
 		return this.trgovacFrame;
 	}
+	
+	public void setConfirmOrderFrame(ConfirmOrderFrame frame) {
+		this.confirmOrderFrame = frame;
+	}
+	
+	public ConfirmOrderFrame getConfirmOrderFrame() {
+		return this.confirmOrderFrame;
+	}
 
 	private void setKupacInfo(KupacFrame kupacFrame, Kupac kupac) {
 		kupacFrame.setIme(kupac.getIme());
@@ -580,6 +646,7 @@ public class MainController {
 	private ProizvodiFrame proizvodiFrame;
 	private TrgovacFrame trgovacFrame;
 	private KorpaFrame korpaFrame;
+	private ConfirmOrderFrame confirmOrderFrame;
 
 	private String narudzbaId;
 	private static String role = "";

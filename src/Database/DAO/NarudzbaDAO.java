@@ -119,6 +119,19 @@ public class NarudzbaDAO implements iDAO<Narudzba> {
 		}
 		return true;
 	}
+	
+	public boolean setOrderForShipping(String datumIsporuke, String napomena, int narudzbaId) throws SQLException {
+		PreparedStatement statement = null;
+		try (Connection connection = DatabaseConnection.getInstance().getConnection()) {
+			statement = (connection.prepareStatement(QueryBuilder.Narudzba.SET_ORDER_FOR_SHIPPING));
+			statement.setString(1, datumIsporuke);
+			statement.setString(2, napomena);
+			statement.setInt(3, narudzbaId);
+			
+			statement.executeUpdate();
+			return true;
+		}
+	}
 
 	public int getLastId() throws SQLException {
 		PreparedStatement statement = null;

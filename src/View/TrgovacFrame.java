@@ -27,10 +27,12 @@ public class TrgovacFrame extends JFrame {
 		setToolbarIcon(); 
 		trgovacPanel = new JPanel();
 		panelNarudzbe = new NarudzbePanel();
+		confirmOrderButton = new JButton("Potvrdi narudžbu");
 		// Add login panel to the main frame.
 		this.getContentPane().setLayout(new BorderLayout());
 		add(BorderLayout.WEST, trgovacPanel);
 		add(BorderLayout.EAST, panelNarudzbe);
+		add(BorderLayout.SOUTH, confirmOrderButton);
 		// Adjust the layout.
 		adjust();
 	}
@@ -62,8 +64,8 @@ public class TrgovacFrame extends JFrame {
 		setGridBag(trgovacPanel);
 	}
 	
-	public void addActionListener(ActionListener listener) {
-		this.proizvodiBtn.addActionListener(listener);
+	public void addConfirmOrderListener(ActionListener listener) {
+		this.confirmOrderButton.addActionListener(listener);
 	}
 	
 	
@@ -204,6 +206,6 @@ public class TrgovacFrame extends JFrame {
 	private JPanel trgovacPanel;
 	private JLabel ime, prezime, korisnicko, lozinka, pol, email, telefon;
 	private JTextField imeTxt, prezimeTxt, korisnickoTxt, polTxt, emailTxt, telefonTxt;
-	private JButton proizvodiBtn;
+	private JButton confirmOrderButton;
 	private int trgovacId;
 }
