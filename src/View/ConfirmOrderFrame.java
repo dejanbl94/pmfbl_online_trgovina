@@ -19,8 +19,6 @@ import javax.swing.JFormattedTextField.AbstractFormatter;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
 import org.jdatepicker.impl.JDatePanelImpl;
@@ -46,6 +44,7 @@ public class ConfirmOrderFrame extends JFrame {
 		p.put("text.year", "Year");
 		JDatePanelImpl datePanel = new JDatePanelImpl(model, p);
 		datePicker = new JDatePickerImpl(datePanel, new AbstractFormatter() {
+			private static final long serialVersionUID = 1L;
 
 			@Override
 			public Object stringToValue(String text) throws ParseException {

@@ -22,6 +22,13 @@ public class Proizvod {
 		this.cijena = cijena;
 		this.id = id;
 	}
+	
+	public Proizvod(String naziv, String opis, double cijena) {
+		super();
+		this.naziv = naziv;
+		this.opis = opis;
+		this.cijena = cijena;
+	}
 
 	public Proizvod() {
 	}

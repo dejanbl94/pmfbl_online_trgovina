@@ -1,6 +1,8 @@
 package View;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Cursor;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -28,6 +30,8 @@ public class TrgovacFrame extends JFrame {
 		trgovacPanel = new JPanel();
 		panelNarudzbe = new NarudzbePanel();
 		confirmOrderButton = new JButton("Potvrdi narudžbu");
+		confirmOrderButton.setEnabled(false);
+		confirmOrderButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
 		// Add login panel to the main frame.
 		this.getContentPane().setLayout(new BorderLayout());
 		add(BorderLayout.WEST, trgovacPanel);
@@ -35,6 +39,9 @@ public class TrgovacFrame extends JFrame {
 		add(BorderLayout.SOUTH, confirmOrderButton);
 		// Adjust the layout.
 		adjust();
+	}
+	public JButton getConfirmOrderButton() {
+		return confirmOrderButton;
 	}
 	private void adjust() {
 		setSize(900, 550);
@@ -52,13 +59,32 @@ public class TrgovacFrame extends JFrame {
 		pol = new JLabel("Pol: ");
 		telefon = new JLabel("Telefon: ");
 		email = new JLabel("Email: ");
+		newLocationBtn = new JButton("Novo mjesto");
+		newLocationBtn.setBackground(Color.WHITE);
+		newLocationBtn.setForeground(Color.DARK_GRAY);
+		newLocationBtn.setCursor(new Cursor(Cursor.HAND_CURSOR));
+		newClerkBtn = new JButton("Novi trgovac");
+		newClerkBtn.setBackground(Color.WHITE);
+		newClerkBtn.setCursor(new Cursor(Cursor.HAND_CURSOR));
+		newClerkBtn.setForeground(Color.DARK_GRAY);
+		addProductBtn = new JButton("Novi proizvod");
+		addProductBtn.setBackground(Color.WHITE);
+		addProductBtn.setForeground(Color.DARK_GRAY);
+		addProductBtn.setCursor(new Cursor(Cursor.HAND_CURSOR));
+		addProductBtn.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createLineBorder(new Color(142, 209, 195)), BorderFactory.createEmptyBorder(10,5,10,5)));
+		newClerkBtn.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createLineBorder(new Color(142, 209, 195)), BorderFactory.createEmptyBorder(10,5,10,5)));
+		newLocationBtn.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createLineBorder(new Color(142, 209, 195)), BorderFactory.createEmptyBorder(10,5,10,5)));
 		
 		imeTxt = new JTextField(20);
+		imeTxt.setEnabled(false);
 		prezimeTxt = new JTextField(20);
+		prezimeTxt.setEnabled(false);
 		korisnickoTxt = new JTextField(20);
-		polTxt = new JTextField(20);
+		korisnickoTxt.setEnabled(false);
 		telefonTxt = new JTextField(20);
+		telefonTxt.setEnabled(false);
 		emailTxt = new JTextField(20);
+		emailTxt.setEnabled(false);
 
 		// Add components.
 		setGridBag(trgovacPanel);
@@ -66,6 +92,18 @@ public class TrgovacFrame extends JFrame {
 	
 	public void addConfirmOrderListener(ActionListener listener) {
 		this.confirmOrderButton.addActionListener(listener);
+	}
+	
+	public void addNewClerkButton(ActionListener listener) {
+		this.newClerkBtn.addActionListener(listener);
+	}
+	
+	public void addNewProductListener(ActionListener listener) {
+		this.addProductBtn.addActionListener(listener);
+	}
+	
+	public void addNewLocationListener(ActionListener listener) {
+		this.newLocationBtn.addActionListener(listener);
 	}
 	
 	
@@ -85,18 +123,22 @@ public class TrgovacFrame extends JFrame {
 		gbc.insets = new Insets(5, 5, 5, 5);
 		gbc.gridx = 1;
 		gbc.gridy = 1;
+		gbc.anchor = GridBagConstraints.PAGE_START;
 		trgovacPanel.add(ime, gbc);
 
 		gbc.gridx = 2;
 		gbc.gridy = 1;
+		gbc.anchor = GridBagConstraints.PAGE_START;
 		trgovacPanel.add(imeTxt, gbc);
 
 		gbc.gridx = 1;
 		gbc.gridy = 2;
+		gbc.anchor = GridBagConstraints.PAGE_START;
 		trgovacPanel.add(prezime, gbc);
 
 		gbc.gridx = 2;
 		gbc.gridy = 2;
+		gbc.anchor = GridBagConstraints.PAGE_START;
 		trgovacPanel.add(prezimeTxt, gbc);
 
 		gbc.gridx = 1;
@@ -110,34 +152,46 @@ public class TrgovacFrame extends JFrame {
 		trgovacPanel.add(korisnickoTxt, gbc);
 		
 		gbc.gridx = 1;
-		gbc.gridy = 4;
-		gbc.anchor = GridBagConstraints.PAGE_START;
-		trgovacPanel.add(pol, gbc);
-		
-		gbc.gridx = 2;
-		gbc.gridy = 4;
-		gbc.anchor = GridBagConstraints.PAGE_START;
-		trgovacPanel.add(polTxt, gbc);
-		
-		gbc.gridx = 1;
-		gbc.gridy = 6;
+		gbc.gridy = 5;
 		gbc.anchor = GridBagConstraints.PAGE_START;
 		trgovacPanel.add(email, gbc);
 		
 		gbc.gridx = 2;
-		gbc.gridy = 6;
+		gbc.gridy = 5;
 		gbc.anchor = GridBagConstraints.PAGE_START;
 		trgovacPanel.add(emailTxt, gbc);
 		
 		gbc.gridx = 1;
-		gbc.gridy = 8;
+		gbc.gridy = 6;
 		gbc.anchor = GridBagConstraints.PAGE_START;
 		trgovacPanel.add(telefon, gbc);
 		
 		gbc.gridx = 2;
-		gbc.gridy = 8;
+		gbc.gridy = 6;
 		gbc.anchor = GridBagConstraints.PAGE_START;
 		trgovacPanel.add(telefonTxt, gbc);
+		
+		gbc.gridx = 1;
+		gbc.gridy = 7;
+		gbc.gridwidth = 2;
+		gbc.insets = new Insets(30, 5, 5, 5);
+		gbc.fill = GridBagConstraints.HORIZONTAL;
+		gbc.anchor = GridBagConstraints.PAGE_START;
+		trgovacPanel.add(newLocationBtn, gbc);
+		
+		gbc.gridx = 1;
+		gbc.gridy = 8;
+		gbc.gridwidth = 2;
+		gbc.fill = GridBagConstraints.HORIZONTAL;
+		gbc.anchor = GridBagConstraints.PAGE_START;
+		trgovacPanel.add(newClerkBtn, gbc);
+		
+		gbc.gridx = 1;
+		gbc.gridy = 9;
+		gbc.gridwidth = 2;
+		gbc.fill = GridBagConstraints.HORIZONTAL;
+		gbc.anchor = GridBagConstraints.PAGE_START;
+		trgovacPanel.add(addProductBtn, gbc);
 	}
 	
 	public JTextField getImeTxt() {
@@ -206,6 +260,6 @@ public class TrgovacFrame extends JFrame {
 	private JPanel trgovacPanel;
 	private JLabel ime, prezime, korisnicko, lozinka, pol, email, telefon;
 	private JTextField imeTxt, prezimeTxt, korisnickoTxt, polTxt, emailTxt, telefonTxt;
-	private JButton confirmOrderButton;
+	private JButton confirmOrderButton, newLocationBtn, newClerkBtn, addProductBtn;
 	private int trgovacId;
 }

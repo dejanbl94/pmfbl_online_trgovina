@@ -2,7 +2,7 @@ package QueryBuilder;
 
 public final class QueryBuilder {
 
-	/**Staticna helper klasa**/
+	/**Helper klasa**/
 	
 	private QueryBuilder() {
 	}
@@ -26,7 +26,7 @@ public final class QueryBuilder {
 		
 		public static final String GET_BY_PRODAJNO_MJESTO = "SELECT * FROM trgovac WHERE prodajno_mjesto_id = ?";
 
-		public static final String INSERT = "INSERT INTO trgovac ( korisnicko_ime, ime, prezime, lozinka, pol, email, prodajno_mjesto_id ) VALUES ( ?, ?, ?, ?, ?, ?, ?)";
+		public static final String INSERT = "INSERT INTO trgovac ( korisnicko_ime, ime, prezime, lozinka, pol, telefon, email, prodajno_mjesto_id ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?)";
 	}
 	
 	public static class Narudzba {
@@ -53,6 +53,8 @@ public final class QueryBuilder {
 		public static final String GET_PROIZVOD_NARUDZBE = "SELECT * FROM artikal_narudzbe AS an INNER JOIN proizvod AS pr ON an.proizvod_id = pr.id WHERE narudzba_id = ?";
 		
 		public static final String GET_ALL = "SELECT * FROM proizvod";
+		
+		public static final String INSERT = "INSERT INTO proizvod (naziv, opis, cijena) VALUES (?, ?, ?)";
 	}
 	
 	public static class Artikal {
@@ -63,5 +65,7 @@ public final class QueryBuilder {
 	public static class ProdajnoMjesto {
 		
 		public static final String GET_ALL = "SELECT * FROM prodajno_mjesto";
+		
+		public static final String INSERT = "INSERT INTO prodajno_mjesto (grad, drzava, adresa, telefon) VALUES (?, ?, ?, ?)";
 	}
 }

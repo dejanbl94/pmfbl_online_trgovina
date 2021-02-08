@@ -1,8 +1,7 @@
 package View;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Dimension;
+import java.awt.Cursor;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -35,6 +34,9 @@ public class KupacFrame extends JFrame {
 		adjust();
 		add(BorderLayout.SOUTH, proizvodiBtn);
 	}
+	public JButton getProizvodiBtn() {
+		return proizvodiBtn;
+	}
 	private void adjust() {
 		setSize(900, 550);
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
@@ -54,15 +56,24 @@ public class KupacFrame extends JFrame {
 		postanskiBroj = new JLabel("Poštanski broj: ");
 		telefon = new JLabel("Telefon");
 		proizvodiBtn = new JButton("Proizvodi");
+		proizvodiBtn.setCursor(new Cursor(Cursor.HAND_CURSOR));
 		
 		imeTxt = new JTextField(20);
+		imeTxt.setEnabled(false);
 		prezimeTxt = new JTextField(20);
+		prezimeTxt.setEnabled(false);
 		gradTxt = new JTextField(20);
+		gradTxt.setEnabled(false);
 		drzavaTxt = new JTextField(20);
+		drzavaTxt.setEnabled(false);
 		adresaTxt = new JTextField(20);
+		adresaTxt.setEnabled(false);
 		emailTxt = new JTextField(20);
+		emailTxt.setEnabled(false);
 		postanskiBrojTxt = new JTextField(20);
+		postanskiBrojTxt.setEnabled(false);
 		telefonTxt = new JTextField(20);
+		telefonTxt.setEnabled(false);
 
 		// Add components.
 		setGridBag(kupacPanel);

@@ -108,6 +108,7 @@ public class TrgovacDAO implements iDAO<Trgovac> {
 				statement.setString(5, trgovac.getTelefon());
 				statement.setString(10, trgovac.getPol());
 				statement.setString(11, trgovac.getEmail());
+				statement.setInt(12, trgovac.getProdajnoMjestId());
 
 				statement.executeUpdate();
 			} else {

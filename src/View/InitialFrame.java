@@ -41,6 +41,14 @@ public class InitialFrame extends JFrame {
 		setGridBag();
 	}
 
+	public JButton getRegisterBtn() {
+		return registerBtn;
+	}
+
+	public void setRegisterBtn(JButton registerBtn) {
+		this.registerBtn = registerBtn;
+	}
+
 	// Register listeners, handling in the controller.
 	public void addNavigateToLoginListener(ActionListener actionListener) {
 		this.loginBtn.addActionListener(actionListener);

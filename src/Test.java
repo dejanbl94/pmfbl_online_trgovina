@@ -18,11 +18,11 @@ public class Test {
 			boolean postoji2 = kupacDAO.exists("Milos2", "d324e075a642b676698d58f0e14b9a766");
 			boolean postoji3 = kupacDAO.exists("Milos", "d324e075a64b676698d58f0e14b9a766");
 			System.out.println(postoji);
-			Kupac kupac = kupacDAO.getBy("Milos");
+			//Kupac kupac = kupacDAO.getBy("Milos");
 			System.out.println(postoji1);
 			System.out.println(postoji2);
 			System.out.println(postoji3);
-			System.out.println(kupac);
+			//System.out.println(kupac);
 			java.util.List<ArtikalDTO> lista = artikalDAO.getAll(10100, null);
 			System.out.println(lista);
 			

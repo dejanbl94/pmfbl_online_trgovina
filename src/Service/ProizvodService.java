@@ -7,6 +7,7 @@ import java.util.List;
 import Database.DAO.ProizvodDAO;
 import Entity.Proizvod;
 import Entity.DTO.ProizvodDTO;
+import View.NewProductFrame;
 
 public class ProizvodService {
 	
@@ -34,6 +35,17 @@ public class ProizvodService {
 			System.err.print(e.getLocalizedMessage());
 		}
 		return null;
+	}
+	
+	public boolean add(NewProductFrame product) {
+		Proizvod proizvod = new Proizvod(product.getNazivTxt(), product.getOpisTxt(), Double.parseDouble(product.getCijenaTxt()));
+		try {
+			proizvodDAO.add(proizvod);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return false;
 	}
 	
 	public void setProizvod(ProizvodDTO proizvod) {

@@ -92,8 +92,28 @@ public class ProizvodDAO implements iDAO<Proizvod> {
 
 	@Override
 	public boolean add(Proizvod entity) throws SQLException {
-		// TODO Auto-generated method stub
-		return false;
+		PreparedStatement statement = null;
+		ResultSet resultSet = null;
+
+		try (Connection connection = DatabaseConnection.getInstance().getConnection()) {
+				statement = connection.prepareStatement(QueryBuilder.Proizvod.INSERT);
+
+				statement.setString(1, entity.getNaziv());
+				statement.setString(2, entity.getOpis());
+				statement.setDouble(3, entity.getCijena());
+
+				statement.executeUpdate();
+		} catch (Exception ex) {
+			System.err.println(ex.getLocalizedMessage());
+		} finally {
+			if (statement != null) {
+				statement.close();
+			}
+			if (resultSet != null) {
+				resultSet.close();
+			}
+		}
+		return true;
 	}
 
 	@Override

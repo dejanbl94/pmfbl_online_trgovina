@@ -5,6 +5,7 @@ import java.util.List;
 
 import Database.DAO.TrgovacDAO;
 import Entity.Trgovac;
+import View.AddTrgovacFrame;
 
 public class TrgovacService {
 
@@ -46,6 +47,16 @@ public class TrgovacService {
 		return trgovac;
 	}
 	
+	public boolean add(Trgovac trgovac) {
+		try {
+			trgovacDAO.add(trgovac);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return false;
+	}
+	
 	public List<Trgovac> getAll() {
 		try {
 			trgovacDAO.get();
@@ -64,5 +75,18 @@ public class TrgovacService {
 
 	public void setNarudzbaId(int narudzbaId) {
 		this.narudzbaId = narudzbaId;
+	}
+	
+	public boolean createClerk(AddTrgovacFrame frame, int prodajnoId) {
+		Trgovac trgovac = new Trgovac(frame.getKorisnickoTxt(), frame.getImeTxt(), frame.getPrezimeTxt(), frame.getLozinkaTxt(), 
+				frame.getPolTxt(), frame.getTelefonTxt(), frame.getEmailTxt(), prodajnoId);
+		
+		try {
+			trgovacDAO.add(trgovac);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return false;
 	}
 }

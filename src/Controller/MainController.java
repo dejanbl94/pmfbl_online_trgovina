@@ -9,10 +9,6 @@ import java.awt.event.MouseListener;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -53,12 +49,15 @@ import Service.NarudzbaService;
 import Service.ProdajnoMjestoService;
 import Service.ProizvodService;
 import Service.TrgovacService;
+import View.AddTrgovacFrame;
 import View.ConfirmOrderFrame;
 import View.DetaljiNarudzbeFrame;
 import View.InitialFrame;
 import View.KorpaFrame;
 import View.KupacFrame;
 import View.LoginFrame;
+import View.NewProductFrame;
+import View.ProdajnoMjestoFrame;
 import View.ProizvodiFrame;
 import View.TrgovacFrame;
 
@@ -110,7 +109,13 @@ public class MainController {
 					}
 					artikliFrame.setVisible(true);
 				} else if (MainController.role == "Trgovac") {
-					trgovacService.setNarudzbaId(Integer.parseInt(narudzbaId));
+					String x = target.getModel().getValueAt(row, 1).toString();
+					if (x.contains("na")) {
+						getTrgovacFrame().getConfirmOrderButton().setEnabled(true);
+						trgovacService.setNarudzbaId(Integer.parseInt(narudzbaId));
+					} else {
+						getTrgovacFrame().getConfirmOrderButton().setEnabled(false);
+					}
 				}
 			}
 		}
@@ -387,6 +392,9 @@ public class MainController {
 						// Dodaj listener za potvrdu narudzbe.
 						trgovacFrame.setVisible(true);
 						trgovacFrame.addConfirmOrderListener(new ConfirmOrderListener());
+						trgovacFrame.addNewClerkButton(new NewClerkButtonListener());
+						trgovacFrame.addNewProductListener(new AddProductListener());
+						trgovacFrame.addNewLocationListener(new AddLocationListener());
 						setTrgovacInfo(trgovacFrame, trgovac);
 						this.loginFrame.setErrorMessage("");
 						trgovacFrame.setTrgovacId(trgovac.getId());
@@ -405,6 +413,7 @@ public class MainController {
 		}
 	}
 
+	// Potvrdi narudzbu.
 	class ConfirmOrderListener implements ActionListener {
 
 		public ConfirmOrderListener() {
@@ -418,9 +427,9 @@ public class MainController {
 			frame.setVisible(true);
 
 		}
-
 	}
-	
+
+	// Posalji narudzbu.
 	class ShipOrderListener implements ActionListener {
 
 		@Override
@@ -434,7 +443,84 @@ public class MainController {
 				JOptionPane.showMessageDialog(null, "Narudžba " + narudzbaId + " nije uspješno poslata!");
 			}
 		}
-		
+	}
+
+	class AddLocationListener implements ActionListener {
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			ProdajnoMjestoFrame prodajnoMjestoFrame = new ProdajnoMjestoFrame();
+			setProdajnoMjestoFrame(prodajnoMjestoFrame);
+			prodajnoMjestoFrame.setVisible(true);
+			prodajnoMjestoFrame.addNewLocationBtnListener(new AddNewProdajnoMjestoListener());
+		}
+	}
+
+	class AddNewProdajnoMjestoListener implements ActionListener {
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+
+			if (prodajnoMjestoService.add(getProdajnoMjestoFrame())) {
+				JOptionPane.showMessageDialog(null, "Novo prodajno mjesto uspješno dodato!");
+			} else {
+				JOptionPane.showMessageDialog(null, "Neuspješno dodavanje novog prodajnog mjesta!");
+			}
+		}
+
+	}
+
+	class NewClerkButtonListener implements ActionListener {
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			AddTrgovacFrame trgovacFrame = new AddTrgovacFrame();
+			setAddTrgovacFrame(trgovacFrame);
+			trgovacFrame.setVisible(true);
+			trgovacFrame.addClerkActionListener(new RegisterClerkActionListener());
+		}
+
+	}
+
+	class AddProductListener implements ActionListener {
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			NewProductFrame product = new NewProductFrame();
+			setNewProductFrame(product);
+			product.setVisible(true);
+			product.btnProductAddActionListener(new AddNewProductListener());
+		}
+	}
+
+	// Dodaj proizvod.
+	class AddNewProductListener implements ActionListener {
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			if (proizvodService.add(getNewProductFrame())) {
+				JOptionPane.showMessageDialog(null, "Novi proizvod uspješno dodat!");
+			} else {
+				JOptionPane.showMessageDialog(null, "Neuspješno dodavanje novog proizvoda!");
+			}
+		}
+	}
+
+	// Dodaj trgovca.
+	class RegisterClerkActionListener implements ActionListener {
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			List<ProdajnoMjesto> mjesta = prodajnoMjestoService.getAll();
+			int prodajnoId = 0;
+			for (int i = 0; i < mjesta.size(); i++) {
+				if (mjesta.get(i).getGrad().equalsIgnoreCase(getAddTrgovacFrame().getProdajnoMjestoTxt())) {
+					prodajnoId = mjesta.get(i).getId();
+					break;
+				}
+			}
+			trgovacService.createClerk(getAddTrgovacFrame(), prodajnoId);
+		}
 	}
 
 	class ComboListener implements ItemListener {
@@ -444,6 +530,11 @@ public class MainController {
 			if (e.getStateChange() == ItemEvent.SELECTED) {
 				Object item = e.getItem();
 				MainController.role = item.toString();
+			}
+			if (MainController.role == "Trgovac") {
+				getInitialFrame().getRegisterBtn().setEnabled(false);
+			} else {
+				getInitialFrame().getRegisterBtn().setEnabled(true);
 			}
 
 		}
@@ -600,13 +691,37 @@ public class MainController {
 	public TrgovacFrame getTrgovacFrame() {
 		return this.trgovacFrame;
 	}
-	
+
 	public void setConfirmOrderFrame(ConfirmOrderFrame frame) {
 		this.confirmOrderFrame = frame;
 	}
-	
+
 	public ConfirmOrderFrame getConfirmOrderFrame() {
 		return this.confirmOrderFrame;
+	}
+
+	public void setAddTrgovacFrame(AddTrgovacFrame frame) {
+		this.addTrgovacFrame = frame;
+	}
+
+	public AddTrgovacFrame getAddTrgovacFrame() {
+		return this.addTrgovacFrame;
+	}
+
+	public void setNewProductFrame(NewProductFrame frame) {
+		this.newProductFrame = frame;
+	}
+
+	public NewProductFrame getNewProductFrame() {
+		return this.newProductFrame;
+	}
+
+	public void setProdajnoMjestoFrame(ProdajnoMjestoFrame frame) {
+		this.prodajnoMjestoFrame = frame;
+	}
+
+	public ProdajnoMjestoFrame getProdajnoMjestoFrame() {
+		return this.prodajnoMjestoFrame;
 	}
 
 	private void setKupacInfo(KupacFrame kupacFrame, Kupac kupac) {
@@ -647,6 +762,9 @@ public class MainController {
 	private TrgovacFrame trgovacFrame;
 	private KorpaFrame korpaFrame;
 	private ConfirmOrderFrame confirmOrderFrame;
+	private AddTrgovacFrame addTrgovacFrame;
+	private ProdajnoMjestoFrame prodajnoMjestoFrame;
+	private NewProductFrame newProductFrame;
 
 	private String narudzbaId;
 	private static String role = "";

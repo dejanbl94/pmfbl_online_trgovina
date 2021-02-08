@@ -2,11 +2,12 @@ package Entity;
 
 public class Trgovac {
 	
-	private String korisnickoIme, ime, prezime, lozinka, pol, telefon, email, prodajnoMjestoId;
+	private String korisnickoIme, ime, prezime, lozinka, pol, telefon, email;
+	private int prodajnoMjestoId;
 	private int id;
 	
 	public Trgovac(int id, String korisnickoIme, String ime, String prezime, String lozinka, String pol, String telefon,
-			String email, int prodajnoMjestId) {
+			String email, int prodajnoMjestoId) {
 		this.id = id;
 		this.korisnickoIme = korisnickoIme;
 		this.ime = ime;
@@ -15,7 +16,19 @@ public class Trgovac {
 		this.pol = pol;
 		this.telefon = telefon;
 		this.email = email;
-		this.prodajnoMjestId = prodajnoMjestId;
+		this.prodajnoMjestoId = prodajnoMjestoId;
+	}
+	
+	public Trgovac(String korisnickoIme, String ime, String prezime, String lozinka, String pol, String telefon,
+			String email, int prodajnoMjestoId) {
+		this.korisnickoIme = korisnickoIme;
+		this.ime = ime;
+		this.prezime = prezime;
+		this.lozinka = lozinka;
+		this.pol = pol;
+		this.telefon = telefon;
+		this.email = email;
+		this.prodajnoMjestId = prodajnoMjestoId;
 	}
 	
 	public int getId() {
@@ -28,11 +41,11 @@ public class Trgovac {
 
 	public Trgovac() {}
 
-	public String getProdajnoMjestoId() {
+	public int getProdajnoMjestoId() {
 		return prodajnoMjestoId;
 	}
 
-	public void setProdajnoMjestoId(String prodajnoMjestoId) {
+	public void setProdajnoMjestoId(int prodajnoMjestoId) {
 		this.prodajnoMjestoId = prodajnoMjestoId;
 	}
 
@@ -106,6 +119,6 @@ public class Trgovac {
 	public String toString() {
 		return "Trgovac [korisnickoIme=" + korisnickoIme + ", ime=" + ime + ", prezime=" + prezime + ", lozinka="
 				+ lozinka + ", pol=" + pol + ", telefon=" + telefon + ", email=" + email + ", prodajnoMjestoId="
-				+ prodajnoMjestoId + ", prodajnoMjestId=" + prodajnoMjestId + "]";
+				+ prodajnoMjestoId + "]";
 	}
 }
