@@ -6,9 +6,9 @@ import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -19,14 +19,11 @@ import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
 
-import com.alee.utils.FileUtils;
 import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
 
 import Database.DAO.ArtikalDAO;
 import Database.DAO.KupacDAO;
@@ -34,7 +31,6 @@ import Database.DAO.NarudzbaDAO;
 import Database.DAO.ProdajnoMjestoDAO;
 import Database.DAO.ProizvodDAO;
 import Database.DAO.TrgovacDAO;
-import Entity.ArtikalNarudzbe;
 import Entity.Kupac;
 import Entity.Narudzba;
 import Entity.ProdajnoMjesto;
@@ -63,24 +59,21 @@ import View.TrgovacFrame;
 
 public class MainController {
 
-	private static final Logger LOGGER = Logger.getLogger(MainController.class.getSimpleName());
-
 	public MainController(InitialFrame frame) {
 		super();
 
+		// Setting initial frame.
 		setInitialFrame(frame);
-		// setKupacFrame(kupacFrame);
-		// setTrgovacFrame(trgovacFrame);
 		getInitialFrame().addNavigateToLoginListener(new LoginBtnListener());
 		getInitialFrame().addComboListener(new ComboListener());
-		// getKupacFrame().addActionListener(new ProductsListener());
 		this.kupacService = new KupacService(new KupacDAO());
+		// Registering our services.
 		this.proizvodService = new ProizvodService(new ProizvodDAO());
 		this.narudzbaService = new NarudzbaService(new NarudzbaDAO(), new ArtikalDAO());
 		this.artikalService = new ArtikalService(new ArtikalDAO());
 		this.trgovacService = new TrgovacService(new TrgovacDAO());
 		this.prodajnoMjestoService = new ProdajnoMjestoService(new ProdajnoMjestoDAO());
-
+		
 		prodajnaMjesta = this.prodajnoMjestoService.getAll();
 		role = getInitialFrame().getComboDefaultValue();
 	}
@@ -104,7 +97,7 @@ public class MainController {
 					artikliFrame
 							.addDiscardOrderBtnListener(new DiscardOrderListener(Integer.parseInt(narudzbaId), row));
 					String statusNarudzbe = target.getModel().getValueAt(row, 1).toString();
-					if (statusNarudzbe.contains("Na")) {
+					if (statusNarudzbe.contains("na")) {
 						artikliFrame.enableRemoveBtn();
 					}
 					artikliFrame.setVisible(true);
@@ -296,8 +289,8 @@ public class MainController {
 				for (var x : listaNarucenihProizvoda) {
 					x.setNarudzbaId(id);
 				}
-				narudzbeJSON = jsonParse.parseAndWrite(listaNarucenihProizvoda, "narudzbe_na_cekanju");
-				List<ProizvodDTO> proizvodi = jsonParse.readJSONToList(narudzbeJSON,
+				JSONOrders = jsonParse.parseAndWrite(listaNarucenihProizvoda, "narudzbe_na_cekanju");
+				List<ProizvodDTO> proizvodi = jsonParse.readJSONToList(JSONOrders,
 						new TypeReference<List<ProizvodDTO>>() {
 						});
 				narudzbaService.setNarudzbeNaCekanju(proizvodi);
@@ -349,14 +342,31 @@ public class MainController {
 					}
 				} else if (MainController.role == "Trgovac") {
 					// Get the list of ordered items.
+
+					ObjectMapper mapper = new ObjectMapper();
 					/*
-					 * ObjectMapper mapper = new ObjectMapper();
 					 * mapper.enable(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY); try
 					 * (InputStream fileStream = new
 					 * FileInputStream("src/resources/narudzbe_na_cekanju.json")) {
 					 * List<ProizvodDTO> list = mapper.readValue(fileStream, new
 					 * TypeReference<List<ProizvodDTO>>() { }); }
 					 */
+					mapper.enable(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY);
+
+					try (InputStream fileStream = new FileInputStream("src/resources/narudzbe_na_cekanju.json")) {
+						List<ProizvodDTO> list = mapper.readValue(fileStream, new TypeReference<List<ProizvodDTO>>() {
+						});
+						System.out.println(list);
+					} catch (JsonParseException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					} catch (JsonMappingException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					} catch (IOException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
 
 					List<ProizvodDTO> narudzbeNaCekanju = narudzbaService.getNarudzbeNaCekanju();
 
@@ -381,7 +391,6 @@ public class MainController {
 									break;
 								}
 							}
-
 						}
 						// Azuriraj narudzbu postavi ID odgovornog trgovca.
 						if (flag) {
@@ -463,11 +472,12 @@ public class MainController {
 
 			if (prodajnoMjestoService.add(getProdajnoMjestoFrame())) {
 				JOptionPane.showMessageDialog(null, "Novo prodajno mjesto uspješno dodato!");
+				// Get prodajna mjesta.
+				prodajnaMjesta = prodajnoMjestoService.getAll();
 			} else {
 				JOptionPane.showMessageDialog(null, "Neuspješno dodavanje novog prodajnog mjesta!");
 			}
 		}
-
 	}
 
 	class NewClerkButtonListener implements ActionListener {
@@ -479,7 +489,6 @@ public class MainController {
 			trgovacFrame.setVisible(true);
 			trgovacFrame.addClerkActionListener(new RegisterClerkActionListener());
 		}
-
 	}
 
 	class AddProductListener implements ActionListener {
@@ -556,6 +565,8 @@ public class MainController {
 				JOptionPane.showMessageDialog(null, "Narudžba uspješno otkazana");
 				getKupacFrame().getNarudzbePanel().refresh(row);
 				populateTable(getKupacFrame());
+			} else {
+				JOptionPane.showMessageDialog(null, "Neuspješno otkazivanje narudžbe");
 			}
 
 		}
@@ -627,16 +638,7 @@ public class MainController {
 
 	}
 
-	public boolean exists(String username, char[] charedPassword) {
-		try {
-			return kupacService.kupacExists(username, charedPassword);
-		} catch (SQLException e) {
-			LOGGER.log(Level.SEVERE, e.getMessage());
-		}
-		return false;
-	}
-
-	/** Accessors **/
+	/** Accessors / Mutators **/
 	public List<Narudzba> getAll(int kupacId) {
 		listaNarudzbi = narudzbaService.getAll(kupacId, "Kupac");
 		return listaNarudzbi;
@@ -768,6 +770,7 @@ public class MainController {
 
 	private String narudzbaId;
 	private static String role = "";
+	private String JSONOrders = "";
 
 	private static List<ProdajnoMjesto> prodajnaMjesta = new ArrayList<ProdajnoMjesto>();
 }

@@ -6,7 +6,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-
 import Database.DatabaseConnection;
 import Database.iDAO.iDAO;
 import Entity.ProdajnoMjesto;
@@ -39,8 +38,6 @@ public class ProdajnoMjestoDAO implements iDAO<ProdajnoMjesto> {
 				prodajnoMjesto.setTelefon(resultSet.getString("telefon"));
 				prodajnaMjesta.add(prodajnoMjesto);
 			}
-		} catch (Exception ex) {
-			System.err.println(ex.getLocalizedMessage());
 		} finally {
 			if (statement != null) {
 				statement.close();
@@ -69,7 +66,7 @@ public class ProdajnoMjestoDAO implements iDAO<ProdajnoMjesto> {
 	}
 
 	@Override
-	public boolean add(ProdajnoMjesto entity) throws SQLException {
+	public int add(ProdajnoMjesto entity) throws SQLException {
 		PreparedStatement statement = null;
 		ResultSet resultSet = null;
 
@@ -81,7 +78,7 @@ public class ProdajnoMjestoDAO implements iDAO<ProdajnoMjesto> {
 				statement.setString(3, entity.getAdresa());
 				statement.setString(4, entity.getTelefon());
 
-				statement.executeUpdate();
+				return statement.executeUpdate();
 		} catch (Exception ex) {
 			System.err.println(ex.getLocalizedMessage());
 		} finally {
@@ -92,7 +89,7 @@ public class ProdajnoMjestoDAO implements iDAO<ProdajnoMjesto> {
 				resultSet.close();
 			}
 		}
-		return true;
+		return 0;
 	}
 
 	@Override

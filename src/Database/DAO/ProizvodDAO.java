@@ -54,8 +54,6 @@ public class ProizvodDAO implements iDAO<Proizvod> {
 		}
 		return proizvodi;
 	}
-	
-
 
 	@Override
 	public List<Proizvod> get() throws SQLException {
@@ -91,7 +89,7 @@ public class ProizvodDAO implements iDAO<Proizvod> {
 	}
 
 	@Override
-	public boolean add(Proizvod entity) throws SQLException {
+	public int add(Proizvod entity) throws SQLException {
 		PreparedStatement statement = null;
 		ResultSet resultSet = null;
 
@@ -102,9 +100,7 @@ public class ProizvodDAO implements iDAO<Proizvod> {
 				statement.setString(2, entity.getOpis());
 				statement.setDouble(3, entity.getCijena());
 
-				statement.executeUpdate();
-		} catch (Exception ex) {
-			System.err.println(ex.getLocalizedMessage());
+				return statement.executeUpdate();
 		} finally {
 			if (statement != null) {
 				statement.close();
@@ -113,7 +109,6 @@ public class ProizvodDAO implements iDAO<Proizvod> {
 				resultSet.close();
 			}
 		}
-		return true;
 	}
 
 	@Override

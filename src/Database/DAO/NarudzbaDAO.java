@@ -48,8 +48,6 @@ public class NarudzbaDAO implements iDAO<Narudzba> {
 				narudzba.setNapomena(resultSet.getString("napomena"));
 				listaNarudzbi.add(narudzba);
 			}
-		} catch (Exception ex) {
-			System.err.println(ex.getLocalizedMessage());
 		} finally {
 			if (statement != null) {
 				statement.close();
@@ -70,10 +68,7 @@ public class NarudzbaDAO implements iDAO<Narudzba> {
 			statement = connection.prepareStatement(QueryBuilder.Narudzba.DELETE);
 
 			statement.setInt(1, (Integer) narudzbaId);
-			statement.execute();
-			return true;
-		} catch (Exception ex) {
-			System.err.println(ex.getLocalizedMessage());
+			return !statement.execute();
 		} finally {
 			if (statement != null) {
 				statement.close();
@@ -82,7 +77,6 @@ public class NarudzbaDAO implements iDAO<Narudzba> {
 				resultSet.close();
 			}
 		}
-		return false;
 	}
 
 	@Override
@@ -92,7 +86,7 @@ public class NarudzbaDAO implements iDAO<Narudzba> {
 	}
 
 	@Override
-	public boolean add(Narudzba narudzba) throws SQLException {
+	public int add(Narudzba narudzba) throws SQLException {
 		PreparedStatement statement = null;
 		ResultSet resultSet = null;
 
@@ -105,8 +99,7 @@ public class NarudzbaDAO implements iDAO<Narudzba> {
 			statement.setString(4, narudzba.getDatumIsporuke());
 			statement.setString(5, narudzba.getNapomena());
 
-			statement.executeUpdate();
-			return false;
+			return statement.executeUpdate();
 		} catch (Exception ex) {
 			System.err.println(ex.getLocalizedMessage());
 		} finally {
@@ -117,9 +110,9 @@ public class NarudzbaDAO implements iDAO<Narudzba> {
 				resultSet.close();
 			}
 		}
-		return true;
+		return 0;
 	}
-	
+
 	public boolean setOrderForShipping(String datumIsporuke, String napomena, int narudzbaId) throws SQLException {
 		PreparedStatement statement = null;
 		try (Connection connection = DatabaseConnection.getInstance().getConnection()) {
@@ -127,7 +120,7 @@ public class NarudzbaDAO implements iDAO<Narudzba> {
 			statement.setString(1, datumIsporuke);
 			statement.setString(2, napomena);
 			statement.setInt(3, narudzbaId);
-			
+
 			statement.executeUpdate();
 			return true;
 		}
@@ -146,8 +139,6 @@ public class NarudzbaDAO implements iDAO<Narudzba> {
 				id = resultSet.getInt("id");
 			}
 			return id;
-		} catch (Exception ex) {
-			System.err.println(ex.getLocalizedMessage());
 		} finally {
 			if (statement != null) {
 				statement.close();
@@ -156,7 +147,6 @@ public class NarudzbaDAO implements iDAO<Narudzba> {
 				resultSet.close();
 			}
 		}
-		return id;
 	}
 
 	public int updateTrgovac(int trgovacId, int narudzbaId) throws SQLException {

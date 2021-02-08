@@ -2,13 +2,16 @@ package Service;
 
 import java.sql.SQLException;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import Database.DAO.ProdajnoMjestoDAO;
 import Entity.ProdajnoMjesto;
 import View.ProdajnoMjestoFrame;
 
 public class ProdajnoMjestoService {
 	
-	ProdajnoMjestoDAO prodajnoDAO;
+	private static final Logger LOG = Logger.getLogger( ProdajnoMjestoService.class.getSimpleName());
 	
 	public ProdajnoMjestoService(ProdajnoMjestoDAO dao) {
 		this.prodajnoDAO = dao;
@@ -17,9 +20,8 @@ public class ProdajnoMjestoService {
 	public List<ProdajnoMjesto> getAll() {
 		try {
 			return prodajnoDAO.get();
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		} catch (SQLException ex) {
+			LOG.log(Level.WARNING, ex.getLocalizedMessage());
 		}
 		return null;
 	}
@@ -27,12 +29,12 @@ public class ProdajnoMjestoService {
 	public boolean add(ProdajnoMjestoFrame prodajno) {
 		try {
 			ProdajnoMjesto prodajnoMjesto = new ProdajnoMjesto(prodajno.getGradTxt(), prodajno.getDrzavaTxt(), prodajno.getAdresaTxt(), prodajno.getTelefonTxt());
-			prodajnoDAO.add(prodajnoMjesto);
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			return prodajnoDAO.add(prodajnoMjesto) == 1;
+		} catch (SQLException ex) {
+			LOG.log(Level.WARNING, ex.getLocalizedMessage());
 		}
 		return false;
 	}
 
+	private ProdajnoMjestoDAO prodajnoDAO;
 }

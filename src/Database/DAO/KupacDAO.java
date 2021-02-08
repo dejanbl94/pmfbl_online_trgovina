@@ -5,9 +5,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 import Database.DatabaseConnection;
 import Database.DbConnectionPool;
 import Database.iDAO.iDAO;
@@ -16,7 +13,6 @@ import QueryBuilder.QueryBuilder;
 
 public class KupacDAO implements iDAO<Kupac> {
 
-	private static final Logger LOGGER = Logger.getLogger( KupacDAO.class.getSimpleName());
 	static DbConnectionPool pool;
 
 	public KupacDAO() {
@@ -39,9 +35,7 @@ public class KupacDAO implements iDAO<Kupac> {
 			} else {
 				return true;
 			}
-		} catch (SQLException ex) {
-			LOGGER.log(Level.SEVERE, ex.getLocalizedMessage());
-		}
+		} 
 		finally {
 			if (statement != null) {
 				statement.close();
@@ -50,7 +44,6 @@ public class KupacDAO implements iDAO<Kupac> {
 				resultSet.close();
 			}
 		}
-		return false;
 	}
 
 	@Override
@@ -81,8 +74,6 @@ public class KupacDAO implements iDAO<Kupac> {
 			} else {
 				return null;
 			}
-		} catch (Exception ex) {
-			System.err.println(ex.getLocalizedMessage());
 		} finally {
 			if (statement != null) {
 				statement.close();
@@ -95,7 +86,7 @@ public class KupacDAO implements iDAO<Kupac> {
 	}
 
 	@Override
-	public boolean add(Kupac kupac) throws SQLException {
+	public int add(Kupac kupac) throws SQLException {
 		PreparedStatement statement = null;
 		ResultSet resultSet = null;
 
@@ -115,12 +106,10 @@ public class KupacDAO implements iDAO<Kupac> {
 				statement.setString(10, kupac.getPol());
 				statement.setString(11, kupac.getEmail());
 				
-				statement.executeUpdate();
+				return statement.executeUpdate();
 			} else {
-				return false;
+				return 0;
 			}
-		} catch (Exception ex) {
-			System.err.println(ex.getLocalizedMessage());
 		} finally {
 			if (statement != null) {
 				statement.close();
@@ -129,7 +118,6 @@ public class KupacDAO implements iDAO<Kupac> {
 				resultSet.close();
 			}
 		}
-		return true;
 	}
 
 	@Override

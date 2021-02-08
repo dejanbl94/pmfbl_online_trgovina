@@ -6,11 +6,9 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-
 import Database.DatabaseConnection;
 import Database.DbConnectionPool;
 import Database.iDAO.iDAO;
-import Entity.Narudzba;
 import Entity.Trgovac;
 import QueryBuilder.QueryBuilder;
 
@@ -38,8 +36,6 @@ public class TrgovacDAO implements iDAO<Trgovac> {
 			} else {
 				return true;
 			}
-		} catch (Exception ex) {
-			System.err.println(ex.getLocalizedMessage());
 		} finally {
 			if (statement != null) {
 				statement.close();
@@ -48,7 +44,6 @@ public class TrgovacDAO implements iDAO<Trgovac> {
 				resultSet.close();
 			}
 		}
-		return false;
 	}
 
 	@Override
@@ -79,8 +74,6 @@ public class TrgovacDAO implements iDAO<Trgovac> {
 			} else {
 				return null;
 			}
-		} catch (Exception ex) {
-			System.err.println(ex.getLocalizedMessage());
 		} finally {
 			if (statement != null) {
 				statement.close();
@@ -93,7 +86,7 @@ public class TrgovacDAO implements iDAO<Trgovac> {
 	}
 
 	@Override
-	public boolean add(Trgovac trgovac) throws SQLException {
+	public int add(Trgovac trgovac) throws SQLException {
 		PreparedStatement statement = null;
 		ResultSet resultSet = null;
 
@@ -110,12 +103,10 @@ public class TrgovacDAO implements iDAO<Trgovac> {
 				statement.setString(11, trgovac.getEmail());
 				statement.setInt(12, trgovac.getProdajnoMjestId());
 
-				statement.executeUpdate();
+				return statement.executeUpdate();
 			} else {
-				return false;
+				return 0;
 			}
-		} catch (Exception ex) {
-			System.err.println(ex.getLocalizedMessage());
 		} finally {
 			if (statement != null) {
 				statement.close();
@@ -124,7 +115,6 @@ public class TrgovacDAO implements iDAO<Trgovac> {
 				resultSet.close();
 			}
 		}
-		return true;
 	}
 
 	@Override
@@ -168,8 +158,6 @@ public class TrgovacDAO implements iDAO<Trgovac> {
 				trgovac.setEmail(resultSet.getString("email"));
 				trgovci.add(trgovac);
 			}
-		} catch (Exception ex) {
-			System.err.println(ex.getLocalizedMessage());
 		} finally {
 			if (statement != null) {
 				statement.close();

@@ -24,8 +24,6 @@ public class Startup {
 			public void run() {
 
 				InitialFrame main = new InitialFrame("Online trgovina");
-				KupacFrame kupac = new KupacFrame("Profil");
-				TrgovacFrame trgovac = new TrgovacFrame("Trgovac");
 				MainController controller = new MainController(main);
 				main.setSize(new Dimension(300, 120));
 				main.setResizable(false);

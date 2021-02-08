@@ -7,7 +7,6 @@ public class ProizvodDTO {
 	private int kupacId, proizvodId, kolicina, narudzbaId;
 	private List<Integer> trgovciId;
 	private String naziv, opis, datumNarudzbe, napomena;
-	
 	public ProizvodDTO(int kupacId, int narudzbaId, List<Integer> trgovciId, int proizvodId, int kolicina, String naziv, String opis,
 			String datumNarudzbe, String napomena, double cijenaKomad) {
 		super();

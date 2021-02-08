@@ -8,7 +8,7 @@ import Entity.DTO.ArtikalDTO;
 public class Test {
 
 	@SuppressWarnings("unused")
-	public static void main(String[] args) {
+	public static void main(String[] args) throws Exception {
 		KupacDAO kupacDAO = new KupacDAO();
 		ArtikalDAO artikalDAO = new ArtikalDAO();
 		boolean postoji;

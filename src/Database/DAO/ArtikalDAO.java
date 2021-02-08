@@ -13,6 +13,7 @@ import Entity.DTO.ArtikalDTO;
 import QueryBuilder.QueryBuilder;
 
 public class ArtikalDAO implements iDAO<ArtikalDTO> {
+	
 	static DbConnectionPool pool;
 	static DatabaseConnection dbConnection;
 	public ArtikalDAO() {
@@ -41,8 +42,6 @@ public class ArtikalDAO implements iDAO<ArtikalDTO> {
 				artikal.setId(resultSet.getInt("id"));
 				listaArtikala.add(artikal);
 			}
-		} catch (Exception ex) {
-			System.err.println(ex.getLocalizedMessage());
 		} finally {
 			if (statement != null) {
 				statement.close();
@@ -61,7 +60,7 @@ public class ArtikalDAO implements iDAO<ArtikalDTO> {
 	}
 
 	@Override
-	public boolean add(ArtikalDTO artikal) throws SQLException {
+	public int add(ArtikalDTO artikal) throws SQLException {
 		PreparedStatement statement = null;
 		ResultSet resultSet = null;
 
@@ -73,10 +72,7 @@ public class ArtikalDAO implements iDAO<ArtikalDTO> {
 			statement.setInt(3, artikal.getKolicina());
 			statement.setDouble(4, artikal.getCijenaKomad());
 
-			statement.executeUpdate();
-			return false;
-		} catch (Exception ex) {
-			System.err.println(ex.getLocalizedMessage());
+			return statement.executeUpdate();
 		} finally {
 			if (statement != null) {
 				statement.close();
@@ -85,7 +81,6 @@ public class ArtikalDAO implements iDAO<ArtikalDTO> {
 				resultSet.close();
 			}
 		}
-		return true;
 	}
 
 	@Override
