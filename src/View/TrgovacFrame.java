@@ -56,7 +56,6 @@ public class TrgovacFrame extends JFrame {
 		ime = new JLabel("Ime: ");
 		prezime = new JLabel("Prezime: ");
 		korisnicko = new JLabel("Korisnicko ime: ");
-		pol = new JLabel("Pol: ");
 		telefon = new JLabel("Telefon: ");
 		email = new JLabel("Email: ");
 		newLocationBtn = new JButton("Novo mjesto");
@@ -258,7 +257,7 @@ public class TrgovacFrame extends JFrame {
 	}
 	
 	private JPanel trgovacPanel;
-	private JLabel ime, prezime, korisnicko, lozinka, pol, email, telefon;
+	private JLabel ime, prezime, korisnicko, email, telefon;
 	private JTextField imeTxt, prezimeTxt, korisnickoTxt, polTxt, emailTxt, telefonTxt;
 	private JButton confirmOrderButton, newLocationBtn, newClerkBtn, addProductBtn;
 	private int trgovacId;

@@ -1,1 +1,12 @@
-"[ {\r\n  \"kupacId\" : 103,\r\n  \"proizvodId\" : 6,\r\n  \"kolicina\" : 1,\r\n  \"narudzbaId\" : 10195,\r\n  \"trgovciId\" : [ 1, 2, 6 ],\r\n  \"naziv\" : \"Štapovi za planinarenje\",\r\n  \"opis\" : \"-\",\r\n  \"datumNarudzbe\" : \"2021-02-08\",\r\n  \"napomena\" : \"\",\r\n  \"cijenaKomad\" : 62.2\r\n} ]"
+[ {
+  "kupacId" : 103,
+  "proizvodId" : 12,
+  "kolicina" : 1,
+  "narudzbaId" : 10207,
+  "trgovciId" : [ 1, 2, 6 ],
+  "naziv" : "Jakna za skijanje",
+  "opis" : "-",
+  "datumNarudzbe" : "2021-02-08",
+  "napomena" : "",
+  "cijenaKomad" : 136.0
+} ]

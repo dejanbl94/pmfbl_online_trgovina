@@ -31,7 +31,7 @@ public class jsonParse {
 		StringBuilder filePath = new StringBuilder();
 		filePath.append("src/resources/").append(outputFile).append(".json");
 		try {
-			objectMapper.writeValue(Paths.get(filePath.toString()).toFile(), json);
+			objectMapper.writeValue(Paths.get(filePath.toString()).toFile(), listToParse);
 
 			return json;
 		} catch (Exception e) {

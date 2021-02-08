@@ -40,16 +40,16 @@ public class LoginFrame extends JFrame {
 		setResizable(false);
 		// Set layout.
 		loginPanel.setLayout(new GridBagLayout());
-		loginPanel.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createTitledBorder("Prijavi se "),
+		loginPanel.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createTitledBorder("Login "),
 				BorderFactory.createEmptyBorder(15, 15, 15, 15)));
 
 		// Create components.
-		korisnickoImeLabel = new JLabel("Korisnicko ime: ");
+		korisnickoImeLabel = new JLabel("Korisničko ime: ");
 		lozinkaLabel = new JLabel("Lozinka: ");
 		errorLabel = new JLabel();
 		korisnickoImeTxt = new JTextField(20);
 		lozinkaTxt = new JPasswordField(20);
-		loginBtn = new JButton("Prijava");
+		loginBtn = new JButton("Login");
 		this.loginBtn.setEnabled(false);
 
 		// Add components.

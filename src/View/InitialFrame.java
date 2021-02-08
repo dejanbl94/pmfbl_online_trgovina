@@ -1,6 +1,5 @@
 package View;
 
-import java.awt.Color;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -32,8 +31,8 @@ public class InitialFrame extends JFrame {
 		setLayout(new GridBagLayout());
 
 		// Create components
-		loginBtn = new JButton("Prijava");
-		registerBtn = new JButton("Registracija");
+		loginBtn = new JButton("Login");
+		registerBtn = new JButton("Register");
 		combo = new JComboBox(comboItems);
 		combo.setSelectedIndex(0);
 

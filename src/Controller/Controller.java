@@ -20,6 +20,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JTable;
 
 import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonMappingException;
@@ -57,9 +58,9 @@ import View.ProdajnoMjestoFrame;
 import View.ProizvodiFrame;
 import View.TrgovacFrame;
 
-public class MainController {
+public class Controller {
 
-	public MainController(InitialFrame frame) {
+	public Controller(InitialFrame frame) {
 		super();
 
 		// Setting initial frame.
@@ -90,7 +91,7 @@ public class MainController {
 				int row = target.getSelectedRow();
 				narudzbaId = target.getModel().getValueAt(row, 4).toString();
 
-				if (MainController.role == "Kupac") {
+				if (Controller.role == "Kupac") {
 					DetaljiNarudzbeFrame artikliFrame = new DetaljiNarudzbeFrame();
 					populateProizvodiTable(artikliFrame, Integer.parseInt(narudzbaId));
 
@@ -101,7 +102,7 @@ public class MainController {
 						artikliFrame.enableRemoveBtn();
 					}
 					artikliFrame.setVisible(true);
-				} else if (MainController.role == "Trgovac") {
+				} else if (Controller.role == "Trgovac") {
 					String x = target.getModel().getValueAt(row, 1).toString();
 					if (x.contains("na")) {
 						getTrgovacFrame().getConfirmOrderButton().setEnabled(true);
@@ -179,7 +180,7 @@ public class MainController {
 		@Override
 		public void mouseClicked(MouseEvent e) {
 
-			if (MainController.role == "Kupac") {
+			if (Controller.role == "Kupac") {
 
 				if (e.getClickCount() == 1) {
 					JTable target = (JTable) e.getSource();
@@ -323,7 +324,7 @@ public class MainController {
 		public void actionPerformed(ActionEvent e) {
 
 			try {
-				if (MainController.role == "Kupac") {
+				if (Controller.role == "Kupac") {
 					if (kupacService.kupacExists(this.loginFrame.getKorisnickoIme(), this.loginFrame.getLozinka())) {
 						KupacFrame kupacFrame = new KupacFrame("Kupac");
 						setKupacFrame(kupacFrame);
@@ -340,23 +341,18 @@ public class MainController {
 						this.loginFrame.setErrorMessage("Kupac nije pronađen");
 						return;
 					}
-				} else if (MainController.role == "Trgovac") {
+				} else if (Controller.role == "Trgovac") {
 					// Get the list of ordered items.
 
 					ObjectMapper mapper = new ObjectMapper();
-					/*
-					 * mapper.enable(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY); try
-					 * (InputStream fileStream = new
-					 * FileInputStream("src/resources/narudzbe_na_cekanju.json")) {
-					 * List<ProizvodDTO> list = mapper.readValue(fileStream, new
-					 * TypeReference<List<ProizvodDTO>>() { }); }
-					 */
 					mapper.enable(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY);
 
+					List<ProizvodDTO> narudzbeNaCekanju = new ArrayList<ProizvodDTO>();
 					try (InputStream fileStream = new FileInputStream("src/resources/narudzbe_na_cekanju.json")) {
-						List<ProizvodDTO> list = mapper.readValue(fileStream, new TypeReference<List<ProizvodDTO>>() {
+						narudzbeNaCekanju = mapper.readValue(fileStream, new TypeReference<List<ProizvodDTO>>() {
 						});
-						System.out.println(list);
+						System.out.println(narudzbeNaCekanju);
+						
 					} catch (JsonParseException e1) {
 						// TODO Auto-generated catch block
 						e1.printStackTrace();
@@ -368,7 +364,7 @@ public class MainController {
 						e1.printStackTrace();
 					}
 
-					List<ProizvodDTO> narudzbeNaCekanju = narudzbaService.getNarudzbeNaCekanju();
+					List<ProizvodDTO> s = narudzbaService.getNarudzbeNaCekanju();
 
 					// Check if trgovac exists.
 					if (trgovacService.trgovacExists(this.loginFrame.getKorisnickoIme(),
@@ -395,6 +391,15 @@ public class MainController {
 						// Azuriraj narudzbu postavi ID odgovornog trgovca.
 						if (flag) {
 							narudzbaService.updateTrgovac(nadjeniTrgovacId, narudzbaId);
+							// Obrisi završenu narudžbu.
+							List<ProizvodDTO> newProducts = new ArrayList<ProizvodDTO>();
+							for (var x : narudzbeNaCekanju) {
+								if (x.getNarudzbaId() != narudzbaId) {
+									newProducts.add(x);
+								}
+							}
+							// Add new orders to the file.
+							JSONOrders = jsonParse.parseAndWrite(newProducts, "narudzbe_na_cekanju");
 						}
 						TrgovacFrame trgovacFrame = new TrgovacFrame("Trgovac");
 						setTrgovacFrame(trgovacFrame);
@@ -409,7 +414,7 @@ public class MainController {
 						trgovacFrame.setTrgovacId(trgovac.getId());
 						populateTableTrgovac(trgovacFrame);
 						if (flag)
-							JOptionPane.showMessageDialog(null, "Imate novu narudžbu na čekanju");
+							JOptionPane.showMessageDialog(null, "Nove narudžbe na čekanju");
 						this.loginFrame.refresh();
 					} else {
 						this.loginFrame.setErrorMessage("Trgovac nije pronađen");
@@ -417,6 +422,9 @@ public class MainController {
 					}
 				}
 			} catch (SQLException e1) {
+				e1.printStackTrace();
+			} catch (JsonProcessingException e1) {
+				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
 		}
@@ -538,16 +546,14 @@ public class MainController {
 		public void itemStateChanged(ItemEvent e) {
 			if (e.getStateChange() == ItemEvent.SELECTED) {
 				Object item = e.getItem();
-				MainController.role = item.toString();
+				Controller.role = item.toString();
 			}
-			if (MainController.role == "Trgovac") {
+			if (Controller.role == "Trgovac") {
 				getInitialFrame().getRegisterBtn().setEnabled(false);
 			} else {
 				getInitialFrame().getRegisterBtn().setEnabled(true);
 			}
-
 		}
-
 	}
 
 	class DiscardOrderListener implements ActionListener {

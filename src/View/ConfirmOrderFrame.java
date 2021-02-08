@@ -134,7 +134,6 @@ public class ConfirmOrderFrame extends JFrame {
 
 	private JLabel deliveryDateLbl;
 	private JLabel noteLbl;
-	private JTextField deliveryDateTxt;
 	private JTextField noteArea;
 	private JPanel panel;
 	private JButton shipOrderBtn;

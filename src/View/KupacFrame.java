@@ -262,6 +262,6 @@ public class KupacFrame extends JFrame {
 	private JPanel kupacPanel;
 	private JLabel ime, prezime, grad, adresa, drzava, email, postanskiBroj, telefon;
 	private JTextField imeTxt, prezimeTxt, gradTxt, drzavaTxt, adresaTxt, emailTxt, postanskiBrojTxt, telefonTxt;
-	private JButton proizvodiBtn, naCekanjuBtn;
+	private JButton proizvodiBtn;
 	private int kupacId;
 }

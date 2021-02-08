@@ -1,7 +1,8 @@
 eclipse.preferences.version=1
-encoding//src/Controller/MainController.java=UTF-8
+encoding//src/Controller/Controller.java=UTF-8
 encoding//src/View/CustomTableRenderer.java=UTF-8
 encoding//src/View/KorpaFrame.java=UTF-8
 encoding//src/View/KupacFrame.java=UTF-8
+encoding//src/View/LoginFrame.java=UTF-8
 encoding//src/View/NarudzbePanel.java=UTF-8
 encoding//src/View/ProizvodiFrame.java=UTF-8
